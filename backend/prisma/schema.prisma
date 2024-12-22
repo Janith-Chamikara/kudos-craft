@@ -1,0 +1,62 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") // uses connection pooling // uses a direct connection
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                      String      @id @default(uuid())
+  email                   String      @unique
+  bio                     String?
+  firstName               String
+  lastName                String
+  usage                   String      @default("personal")
+  companyName             String?
+  industryType            String?
+  numberOfEmployees       Int?
+  job                     String?
+  subscriptionPlan        String      @default("free")
+  role                    String      @default("user")
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+  password                String
+  isInitialSetupCompleted Boolean     @default(false)
+  //relations
+  workspaces              Workspace[]
+
+  @@index([email])
+}
+
+model Workspace {
+  id        String   @id @default(uuid())
+  title     String
+  details   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //relations
+  ownerId     String
+  testimonial Testimonial[]
+  owner       User          @relation(fields: [ownerId], references: [id])
+
+  @@index([id])
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  ratings   Float
+  review    String
+  createdAt DateTime @default(now())
+  updatedat DateTime @updatedAt
+
+  //relations
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@index([id])
+}
