@@ -20,10 +20,29 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { createWorkspace } from '@/lib/actions';
+import { CreateWorkspaceFormInputs } from '@/lib/types';
+import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createWorkspaceSchema } from '@/schemas/schema';
+import FormField from '@/components/FormField';
+import { CreateWorkspaceForm } from './CreateWorkspceFormDialog';
 
 const sidebarItems = [
   { icon: Home, label: 'Dashboard', href: '/dashboard' },
@@ -34,6 +53,31 @@ const sidebarItems = [
 ];
 
 export default function Dashboard() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateWorkspaceFormInputs>({
+    resolver: zodResolver(createWorkspaceSchema),
+  });
+
+  const { data: session } = useSession();
+  const createWorkspaceHandler = async (data: CreateWorkspaceFormInputs) => {
+    if (!session) {
+      toast.error('You need to be logged in to create a workspace');
+      return;
+    }
+    data.ownerId = session?.user?.id as number;
+    const response = await createWorkspace(data);
+    if (response) {
+      if (response.status === 'success') {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    }
+  };
+
   return (
     <div className="flex h-screen border-t bg-background max-w-[95%] mx-auto">
       {/* Sidebar */}
@@ -58,9 +102,8 @@ export default function Dashboard() {
               <DropdownMenuItem>Team Alpha</DropdownMenuItem>
               <DropdownMenuItem>Client XYZ</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create New Workspace
+              <DropdownMenuItem asChild>
+                <CreateWorkspaceForm />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -91,10 +134,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold">Dashboard</h1>
             <div className="flex space-x-2">
               <Input placeholder="Search..." className="w-64" />
-              <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New Workspace
-              </Button>
+              <CreateWorkspaceForm />
             </div>
           </div>
 

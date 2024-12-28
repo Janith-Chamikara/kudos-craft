@@ -10,9 +10,12 @@ import { Icons } from '@/components/ui/icons';
 import { z } from 'zod';
 import {
   accountSetupSchema,
+  createReviewSchema,
+  createWorkspaceSchema,
   loginSchema,
   signUpSchema,
 } from '@/schemas/schema';
+import { create } from 'domain';
 
 export interface NavItem {
   title: string;
@@ -56,6 +59,13 @@ export type Status = {
 export type SignUpInputs = z.infer<typeof signUpSchema>;
 export type LoginInputs = z.infer<typeof loginSchema>;
 export type AccountSetupFormInputs = z.infer<typeof accountSetupSchema>;
+export type CreateWorkspaceFormInputs = z.infer<
+  typeof createWorkspaceSchema
+> & {
+  ownerId: number;
+};
+
+export type CreateReviewFormInputs = z.infer<typeof createReviewSchema>;
 
 export type LoginResponse = {
   user: {

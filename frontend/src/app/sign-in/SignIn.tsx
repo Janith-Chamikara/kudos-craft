@@ -11,6 +11,8 @@ import SubmitButton from '@/components/submit-button';
 import toast from 'react-hot-toast';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { boolean } from 'zod';
+import { useState } from 'react';
 
 export default function SignIn() {
   const {
@@ -20,7 +22,8 @@ export default function SignIn() {
   } = useForm({
     resolver: zodResolver(loginSchema), // Apply the zodResolver
   });
-  const { data: session } = useSession();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { data: session, status } = useSession();
   const router = useRouter();
   const onSubmit = async (data: FieldValues) => {
     const result = await signIn('credentials', {
@@ -33,13 +36,17 @@ export default function SignIn() {
       return;
     } else if (result?.ok) {
       toast.success('Login successful');
-      if (session?.user.isInitialSetupCompleted) {
-        router.push('/dashboard');
-      } else {
-        router.push('/account-setup');
-      }
+      router.refresh();
     }
   };
+
+  if (status === 'authenticated') {
+    if (session.user.isInitialSetupCompleted) {
+      router.push('/dashboard');
+    } else {
+      router.push('/account-setup');
+    }
+  }
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-6 rounded-2xl bg-card p-8 shadow-xl sm:p-10">

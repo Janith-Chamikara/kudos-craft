@@ -5,6 +5,7 @@ import { isAxiosError } from 'axios';
 import { getServerSession } from 'next-auth';
 import { FieldValues } from 'react-hook-form';
 import { authOptions } from './auth-options';
+import { CreateWorkspaceFormInputs } from './types';
 
 export type Status = {
   status: 'default' | 'success' | 'error';
@@ -105,11 +106,36 @@ export const signUpAction = async (data: FieldValues) => {
 };
 
 //account-setup
-
 export const setupAccountDetails = async (data: FieldValues) => {
   const session = await getServerSession(authOptions);
   try {
     const response = await axiosPublic.post('/user/account-setup', data, {
+      headers: {
+        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+      },
+    });
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+
+//workspace actions
+export const createWorkspace = async (data: CreateWorkspaceFormInputs) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.post('/workspace/create', data, {
       headers: {
         Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
         Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
