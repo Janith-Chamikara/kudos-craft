@@ -10,7 +10,7 @@ export class WorkspaceService {
     const isWorkspaceWithSameNameExists =
       await this.prismaService.workspace.findFirst({
         where: {
-          title: workspaceDto.title,
+          name: workspaceDto.name,
         },
       });
     if (isWorkspaceWithSameNameExists) {

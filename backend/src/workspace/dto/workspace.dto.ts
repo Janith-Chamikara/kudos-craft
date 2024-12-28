@@ -4,7 +4,7 @@ export class WorkspaceDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
-  readonly title: string;
+  readonly name: string;
 
   @IsDefined()
   @IsString()
@@ -12,5 +12,5 @@ export class WorkspaceDto {
   readonly ownerId: string;
 
   @IsOptional()
-  readonly details: string;
+  readonly description: string;
 }

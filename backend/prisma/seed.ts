@@ -15,8 +15,8 @@ async function main() {
       workspaces: {
         create: [
           {
-            title: 'Workspace 1',
-            details: 'Details of workspace 1',
+            name: 'Workspace 1',
+            description: 'Details of workspace 1',
             testimonial: {
               create: [
                 {
@@ -51,8 +51,8 @@ async function main() {
       workspaces: {
         create: [
           {
-            title: 'Workspace 2',
-            details: 'Details of workspace 2',
+            name: 'Workspace 2',
+            description: 'Details of workspace 2',
             testimonial: {
               create: [
                 {
