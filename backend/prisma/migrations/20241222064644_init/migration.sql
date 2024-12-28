@@ -13,8 +13,9 @@ CREATE TABLE "User" (
     "subscriptionPlan" TEXT NOT NULL DEFAULT 'free',
     "role" TEXT NOT NULL DEFAULT 'user',
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedat" DATETIME NOT NULL,
-    "password" TEXT NOT NULL
+    "updatedAt" DATETIME NOT NULL,
+    "password" TEXT NOT NULL,
+    "isInitialSetupCompleted" BOOLEAN NOT NULL DEFAULT false
 );
 
 -- CreateTable
@@ -23,7 +24,7 @@ CREATE TABLE "Workspace" (
     "title" TEXT NOT NULL,
     "details" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedat" DATETIME NOT NULL,
+    "updatedAt" DATETIME NOT NULL,
     "ownerId" TEXT NOT NULL,
     CONSTRAINT "Workspace_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

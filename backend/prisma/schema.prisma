@@ -31,11 +31,11 @@ model User {
 }
 
 model Workspace {
-  id        String   @id @default(uuid())
-  title     String
-  details   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   //relations
   ownerId     String

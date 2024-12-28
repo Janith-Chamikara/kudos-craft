@@ -26,8 +26,8 @@ export class UserService {
     const workspaceName = accountSetupDto.workspace.name;
     const workspaceDetails = accountSetupDto.workspace.description;
     const workspace = await this.workspaceService.createWorkspace({
-      title: workspaceName,
-      details: workspaceDetails,
+      name: workspaceName,
+      description: workspaceDetails,
       ownerId: currentUser.id,
     });
     currentUser.isInitialSetupCompleted = true;
