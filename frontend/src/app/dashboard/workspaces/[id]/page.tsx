@@ -2,11 +2,13 @@
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useParams, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { LinkShareDialog } from './components/LinkShareDialog';
+import { useSession } from 'next-auth/react';
 
 export default async function Workspaces() {
   const { id } = useParams();
+  console.log(process.env.NEXT_PUBLIC_FRONTEND_URL);
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   return (
     <main className="flex-1 overflow-y-auto">
@@ -18,7 +20,7 @@ export default async function Workspaces() {
           <div className="flex space-x-2">
             <Input placeholder="Search..." className="w-64" />
             <LinkShareDialog
-              link="http://test"
+              link={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/create-review?workspaceId=${id}`}
               description="test"
               title="test"
             />

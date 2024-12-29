@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Edit, Star } from 'lucide-react';
@@ -13,6 +13,8 @@ import { createReviewSchema } from '@/schemas/schema';
 import FormField from '@/components/FormField';
 import Image from 'next/image';
 import avatar_img from '@public/avatar.jpeg';
+import { useRouter, useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const StarRating = ({
   rating,
@@ -35,7 +37,21 @@ const StarRating = ({
 };
 
 export default function ClientReviewForm() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    const workspaceId = searchParams.get('workspaceId');
+    if (!workspaceId) {
+      toast.error('Invalid workspace id');
+      setTimeout(() => {
+        router.push('/');
+      }, 3000);
+
+      return;
+    }
+  }, [searchParams]);
 
   const {
     register,
