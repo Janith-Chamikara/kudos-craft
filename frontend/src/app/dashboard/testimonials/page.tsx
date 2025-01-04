@@ -10,6 +10,7 @@ export default async function Workspaces() {
           <h1 className="text-2xl font-bold">Testimonials</h1>
           <div className="flex">
             <Input placeholder="Search..." className="w-64" />
+            
           </div>
         </div>
         <ul className="flex flex-row gap-4 flex-wrap">

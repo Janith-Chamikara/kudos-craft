@@ -5,7 +5,7 @@ import { isAxiosError } from 'axios';
 import { getServerSession } from 'next-auth';
 import { FieldValues } from 'react-hook-form';
 import { authOptions } from './auth-options';
-import { CreateWorkspaceFormInputs } from './types';
+import { CreateReviewFormInputs, CreateWorkspaceFormInputs } from './types';
 
 export type Status = {
   status: 'default' | 'success' | 'error';
@@ -141,6 +141,86 @@ export const createWorkspace = async (data: CreateWorkspaceFormInputs) => {
         Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
       },
     });
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const getAllWorkspaces = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get('/workspace/get-all', {
+      headers: {
+        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+      },
+    });
+    console.log(response.data);
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+
+//review actions
+export const createReview = async (data: CreateReviewFormInputs) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.post('/testimonial/create', data, {
+      headers: {
+        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+      },
+    });
+    console.log(response);
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+
+export const getAllTestimonialsByWorkspaceId = async (workspaceId: string) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(
+      `/testimonial/workspace/get-all?workspaceId=${workspaceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
     return {
       status: 'success',
       data: response.data,

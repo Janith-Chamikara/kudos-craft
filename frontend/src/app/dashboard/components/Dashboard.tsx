@@ -8,8 +8,6 @@ import {
   Star,
   BarChart,
   Settings,
-  PlusCircle,
-  Search,
   ChevronDown,
   SmileIcon,
 } from 'lucide-react';
@@ -23,17 +21,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { createWorkspace } from '@/lib/actions';
 import { CreateWorkspaceFormInputs } from '@/lib/types';
 import toast from 'react-hot-toast';
@@ -41,8 +28,6 @@ import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createWorkspaceSchema } from '@/schemas/schema';
-import FormField from '@/components/FormField';
-import { CreateWorkspaceForm } from './CreateWorkspceFormDialog';
 
 const sidebarItems = [
   { icon: Home, label: 'Dashboard', href: '/dashboard' },
@@ -103,7 +88,7 @@ export default function Dashboard() {
               <DropdownMenuItem>Client XYZ</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <CreateWorkspaceForm />
+                {/* <CreateWorkspaceForm /> */}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -134,7 +119,7 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold">Dashboard</h1>
             <div className="flex space-x-2">
               <Input placeholder="Search..." className="w-64" />
-              <CreateWorkspaceForm />
+              {/* <CreateWorkspaceForm /> */}
             </div>
           </div>
 
