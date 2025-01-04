@@ -9,6 +9,7 @@ import { JwtGuard } from './auth/guards/jwt.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtStrategy } from './auth/services/strategies/jwt.strategy';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { TestimonialModule } from './testimonial/testimonial.module';
 @Module({
   imports: [
     UserModule,
@@ -18,6 +19,7 @@ import { WorkspaceModule } from './workspace/workspace.module';
       isGlobal: true,
     }),
     WorkspaceModule,
+    TestimonialModule,
   ],
   controllers: [AppController],
   providers: [
