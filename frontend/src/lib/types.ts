@@ -87,3 +87,23 @@ export type LoginResponse = {
     refreshTokenExpiresIn: number;
   };
 };
+
+export type Workspace = {
+  id: string;
+  name: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  ownerId: string;
+};
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  email: string;
+  ratings: number;
+  review: string;
+  createdAt: Date;
+  updatedat: Date;
+  workspaceId: string;
+};

@@ -57,5 +57,5 @@ export const createReviewSchema = z.object({
     .number()
     .min(1, 'Please provide a rating')
     .max(5, 'Rating must be less than or equal to 5'),
-  profileImage: z.instanceof(File).optional(),
+  profileImage: z.any().optional(),
 });

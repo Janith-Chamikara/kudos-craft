@@ -22,8 +22,13 @@ import { createWorkspace } from '@/lib/actions';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { PlusCircle } from 'lucide-react';
 import FormField from '@/components/FormField';
+import { Dispatch, SetStateAction } from 'react';
 
-export function CreateWorkspaceForm() {
+type Props = {
+  setIsFetched: Dispatch<SetStateAction<boolean>>;
+};
+
+export function CreateWorkspaceForm({ setIsFetched }: Props) {
   const {
     register,
     handleSubmit,
@@ -48,6 +53,7 @@ export function CreateWorkspaceForm() {
         toast.error(response.message);
       }
     }
+    setIsFetched((prev) => !prev);
   };
 
   return (
@@ -67,7 +73,7 @@ export function CreateWorkspaceForm() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col items-start  gap-4">
+            <div className="flex flex-col items-start gap-4">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>

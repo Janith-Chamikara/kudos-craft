@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Edit, Star } from 'lucide-react';
@@ -13,6 +13,9 @@ import { createReviewSchema } from '@/schemas/schema';
 import FormField from '@/components/FormField';
 import Image from 'next/image';
 import avatar_img from '@public/avatar.jpeg';
+import { useRouter, useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { createReview } from '@/lib/actions';
 
 const StarRating = ({
   rating,
@@ -35,7 +38,21 @@ const StarRating = ({
 };
 
 export default function ClientReviewForm() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    const workspaceId = searchParams.get('workspaceId');
+    if (!workspaceId) {
+      toast.error('Invalid workspace id');
+      setTimeout(() => {
+        router.push('/');
+      }, 3000);
+
+      return;
+    }
+  }, [searchParams]);
 
   const {
     register,
@@ -49,9 +66,23 @@ export default function ClientReviewForm() {
     },
   });
 
-  const onSubmit = (data: CreateReviewFormInputs) => {
+  console.log(errors);
+
+  const onSubmit = async (data: CreateReviewFormInputs) => {
     console.log(data);
-    // Here you would typically send the data to your backend
+    toast.loading('Submitting your review');
+    const requiredData = {
+      ...data,
+      workspaceId: searchParams.get('workspaceId'),
+    };
+    const response = await createReview(requiredData);
+    if (response?.status === 'success') {
+      toast.dismiss();
+      toast.success(response.message);
+    } else {
+      toast.dismiss();
+      toast.error(response?.message as string);
+    }
   };
 
   const handleImageChange = (e: any) => {
@@ -90,7 +121,7 @@ export default function ClientReviewForm() {
               id="profileImage"
               type="file"
               accept="image/*"
-              {...register('profileImage')}
+              // {...register('profileImage')}
               onChange={(e) => {
                 register('profileImage').onChange(e);
                 handleImageChange(e);
@@ -107,6 +138,15 @@ export default function ClientReviewForm() {
               placeholder="Your Name"
             />
           </div>
+          <div className="flex flex-col gap-4">
+            <Label htmlFor="clientName">Your Email</Label>
+            <FormField
+              name="email"
+              register={register}
+              error={errors.email}
+              placeholder="johndoe@gmail.com"
+            />
+          </div>
 
           <div className="flex flex-col gap-4">
             <Label htmlFor="review">Your Review</Label>
@@ -114,7 +154,7 @@ export default function ClientReviewForm() {
               name="review"
               isTextArea
               register={register}
-              error={errors.name}
+              error={errors.review}
               placeholder="Your Review"
             />
           </div>

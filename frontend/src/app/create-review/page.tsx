@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import ClientReviewForm from './components/ClientReviewForm';
 
 export default function SignInPage() {
@@ -6,7 +7,9 @@ export default function SignInPage() {
       <h1 className="text-2xl font-semibold mb-4">
         User is requesting a review from you
       </h1>
-      <ClientReviewForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ClientReviewForm />
+      </Suspense>
     </div>
   );
 }

@@ -24,4 +24,33 @@ export class WorkspaceService {
     if (newWorkspace) return newWorkspace;
     return null;
   }
+
+  async getWorkspaces() {
+    return this.prismaService.workspace.findMany();
+  }
+
+  async getWorkspaceById(id: string) {
+    return this.prismaService.workspace.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async updateWorkspace(id: string, workspaceDto: WorkspaceDto) {
+    return this.prismaService.workspace.update({
+      where: {
+        id,
+      },
+      data: workspaceDto,
+    });
+  }
+
+  async deleteWorkspace(id: string) {
+    return this.prismaService.workspace.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
