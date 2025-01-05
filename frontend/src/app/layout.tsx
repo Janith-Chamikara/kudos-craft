@@ -9,6 +9,7 @@ import ThemeSwitch from '../components/ThemeSwitch';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AuthContextProvider from '@/context/auth-context-provider';
+import QueryContextProvider from '@/context/query-context-provider';
 
 const fontHeading = Inter({
   subsets: ['latin'],
@@ -39,29 +40,31 @@ export default function RootLayout({
         className={cn('antialiased', fontHeading.variable, fontBody.variable)}
       >
         <AuthContextProvider>
-          <ThemeContextProvider>
-            <Navbar />
-            {children}
-            <Footer />
-            <ThemeSwitch />
-            <Toaster
-              toastOptions={{
-                success: {
-                  style: {
-                    backgroundColor: 'green',
-                    color: 'white',
+          <QueryContextProvider>
+            <ThemeContextProvider>
+              <Navbar />
+              {children}
+              <Footer />
+              <ThemeSwitch />
+              <Toaster
+                toastOptions={{
+                  success: {
+                    style: {
+                      backgroundColor: 'green',
+                      color: 'white',
+                    },
                   },
-                },
-                error: {
-                  style: {
-                    backgroundColor: 'red',
-                    color: 'white',
+                  error: {
+                    style: {
+                      backgroundColor: 'red',
+                      color: 'white',
+                    },
                   },
-                },
-              }}
-              position="top-right"
-            />
-          </ThemeContextProvider>
+                }}
+                position="top-right"
+              />
+            </ThemeContextProvider>
+          </QueryContextProvider>
         </AuthContextProvider>
       </body>
     </html>
