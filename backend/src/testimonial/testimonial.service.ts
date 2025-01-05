@@ -16,7 +16,7 @@ export class TestimonialService {
       });
     if (isWorkspaceWithSameNameExists) {
       throw new BadRequestException(
-        'You have already submitted a testimonial with this email for this user',
+        'You have already submitted a testimonial with this email for this user.',
       );
     }
     const newTestimonial = await this.prismaService.testimonial.create({
@@ -27,11 +27,13 @@ export class TestimonialService {
   }
 
   async getTestimonialsByWorkspaceId(workspaceId: string) {
-    return this.prismaService.testimonial.findMany({
+    const testimonials = await this.prismaService.testimonial.findMany({
       where: {
         workspaceId,
       },
     });
+    console.log(testimonials);
+    return testimonials;
   }
 
   async getTestimonials() {
