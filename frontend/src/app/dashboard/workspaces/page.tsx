@@ -7,29 +7,21 @@ import { CreateWorkspaceForm } from '../components/CreateWorkspceFormDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { getAllWorkspaces } from '@/lib/actions';
-import { Workspace } from '@/lib/types';
+import { Status, Workspace } from '@/lib/types';
 import { Intro } from '@/components/Intro';
+import { useQuery } from '@tanstack/react-query';
+import Loader from '@/components/Loader';
 
 export default function Workspaces() {
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [isFetched, setIsFetched] = useState<boolean>(false);
   const router = useRouter();
 
-  const fetchWorkspaces = async () => {
-    const response = await getAllWorkspaces();
-    const fetchedWorkspaces = (response?.data as Workspace[]) ?? [];
-    setWorkspaces(fetchedWorkspaces);
-  };
-
-  useEffect(() => {
-    fetchWorkspaces();
-  }, [isFetched]);
-
-  const handleWorkspaceCreated = () => {
-    fetchWorkspaces();
-    router.refresh();
-  };
-
+  const { data, isLoading, error } = useQuery<Status | undefined>({
+    queryKey: ['workspaces'],
+    queryFn: () => getAllWorkspaces(),
+  });
+  console.log(data);
+  const workspaces = (data?.data as Workspace[]) ?? [];
   return (
     <main className="flex-1 overflow-y-auto">
       <div className="container mx-auto p-4">
@@ -41,25 +33,27 @@ export default function Workspaces() {
           </div>
         </div>
         <Intro />
-        <ul className="flex flex-row gap-4 flex-wrap">
-          {workspaces.map((workspace) => (
-            <Link
-              href={`/dashboard/workspaces/${workspace.id}?name=${workspace.name}`}
-              key={workspace.id}
-            >
-              <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-xl font-medium">
-                    {workspace.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm ">{workspace.description}</div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </ul>
+        <Loader isLoading={isLoading}>
+          <ul className="flex flex-row gap-4 flex-wrap">
+            {workspaces.map((workspace) => (
+              <Link
+                href={`/dashboard/workspaces/${workspace.id}?name=${workspace.name}`}
+                key={workspace.id}
+              >
+                <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-xl font-medium">
+                      {workspace.name}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm ">{workspace.description}</div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </ul>
+        </Loader>
       </div>
     </main>
   );
