@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { WorkspaceService } from './services/workspace.service';
 import { WorkspaceDto } from './dto/workspace.dto';
 
@@ -19,12 +19,12 @@ export class WorkspaceController {
   }
 
   @Get('get-one')
-  async getWorkspaceById(@Body() id: string) {
-    return this.workspaceService.getWorkspaceById(id);
+  async getWorkspaceById(@Query('workspaceId') workspaceId: string) {
+    return this.workspaceService.getWorkspaceById(workspaceId);
   }
 
   @Delete('delete')
-  async deleteWorkspace(@Body() id: string) {
-    return this.workspaceService.deleteWorkspace(id);
+  async deleteWorkspace(@Query('workspaceId') workspaceId: string) {
+    return this.workspaceService.deleteWorkspace(workspaceId);
   }
 }
