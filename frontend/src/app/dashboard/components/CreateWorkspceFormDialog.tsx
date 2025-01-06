@@ -60,8 +60,8 @@ export function CreateWorkspaceForm({ setIsFetched }: Props) {
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Workspace
+          <PlusCircle className="md:mr-2 h-4 w-4" />
+          <span className="hidden md:block">New Workspace</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

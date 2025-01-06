@@ -20,7 +20,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-card border-r">
+    <aside className="md:w-64 bg-card border-r">
       <nav className="p-4">
         <ul className="space-y-2">
           {sidebarItems.map((item) => (
@@ -31,8 +31,8 @@ export default function Sidebar() {
                   pathname === item.href ? 'bg-accent' : ''
                 }`}
               >
-                <item.icon className="h-5 w-5 mr-3" />
-                <span>{item.label}</span>
+                <item.icon className="h-5 w-5 md:mr-3" />
+                <span className="hidden md:block">{item.label}</span>
               </Link>
             </li>
           ))}
