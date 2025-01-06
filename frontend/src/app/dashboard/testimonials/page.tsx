@@ -6,11 +6,10 @@ export default async function Workspaces() {
   return (
     <main className="flex-1 overflow-y-auto">
       <div className="container mx-auto p-4">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col md:flex-row md:justify-between gap-2 md:items-center mb-6">
           <h1 className="text-2xl font-bold">Testimonials</h1>
           <div className="flex">
             <Input placeholder="Search..." className="w-64" />
-            
           </div>
         </div>
         <ul className="flex flex-row gap-4 flex-wrap">
