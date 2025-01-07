@@ -165,7 +165,60 @@ export const getAllWorkspaces = async () => {
         Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
       },
     });
-    console.log(response.data);
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const getWorkspaceById = async (workspaceId: string) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(
+      `/workspace/get-one?workspaceId=${workspaceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const deleteWorkspace = async (workspaceId: string) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.delete(
+      `/workspace/delete?workspaceId=${workspaceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
     return {
       status: 'success',
       data: response.data,
