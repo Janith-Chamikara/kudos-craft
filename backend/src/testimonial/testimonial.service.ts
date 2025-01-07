@@ -7,6 +7,7 @@ export class TestimonialService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createWorkspace(testimonialDto: TestimonialDto) {
+    console.log(testimonialDto);
     const isWorkspaceWithSameNameExists =
       await this.prismaService.testimonial.findFirst({
         where: {
