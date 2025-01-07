@@ -9,6 +9,7 @@ import { Status, Testimonial } from '@/lib/types';
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/Loader';
+import { TestimonialCard } from '../../components/Testimonial';
 
 export default function Workspaces() {
   const { id } = useParams();
@@ -19,6 +20,7 @@ export default function Workspaces() {
     queryFn: () => getAllTestimonialsByWorkspaceId(id as string),
   });
   const testimonials = (data?.data as Testimonial[]) ?? [];
+  console.log(testimonials);
 
   return (
     <main className="flex-1 overflow-y-auto">
@@ -40,16 +42,7 @@ export default function Workspaces() {
           <ul className="flex justify-start flex-row gap-4 flex-wrap">
             {testimonials.length > 0 ? (
               testimonials.map((testimonial) => (
-                <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-xl font-medium">
-                      {testimonial.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm ">{testimonial.review}</div>
-                  </CardContent>
-                </Card>
+                <TestimonialCard testimonial={testimonial} />
               ))
             ) : (
               <p className="text-sm">

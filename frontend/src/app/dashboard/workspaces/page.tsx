@@ -15,25 +15,16 @@ import { HiDotsHorizontal } from 'react-icons/hi';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { FaArrowRight } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
+import { DeleteWorkspaceDialog } from '../components/DeleteWorkspaceDialog';
 
 export default function Workspaces() {
   const [isFetched, setIsFetched] = useState<boolean>(false);
-  const router = useRouter();
 
-  const { data, isLoading, error } = useQuery<Status | undefined>({
+  const { data, isLoading, error, refetch } = useQuery<Status | undefined>({
     queryKey: ['workspaces'],
     queryFn: () => getAllWorkspaces(),
   });
@@ -45,14 +36,17 @@ export default function Workspaces() {
           <h1 className="text-2xl font-bold">Workspaces</h1>
           <div className="flex space-x-2">
             <Input placeholder="Search..." className="w-64" />
-            <CreateWorkspaceForm setIsFetched={setIsFetched} />
+            <CreateWorkspaceForm refetch={refetch} />
           </div>
         </div>
         <Intro />
         <Loader isLoading={isLoading}>
           <ul className="flex flex-row gap-4 flex-wrap">
             {workspaces.map((workspace) => (
-              <Card className="cursor-pointer w-full  hover:shadow-md transition-shadow duration-200">
+              <Card
+                key={workspace.id}
+                className="cursor-pointer w-full  hover:shadow-md transition-shadow duration-200"
+              >
                 <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between space-y-0 pb-2">
                   <CardTitle className="text-xl font-medium">
                     {workspace.name}
@@ -76,9 +70,16 @@ export default function Workspaces() {
                           <HiDotsHorizontal className="w-5 h-5" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuContent className="flex flex-col">
+                        <CreateWorkspaceForm
+                          refetch={refetch}
+                          isEditForm={true}
+                          workspaceId={workspace.id}
+                        />
+                        <DeleteWorkspaceDialog
+                          workspaceId={workspace.id}
+                          refetch={refetch}
+                        />
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
