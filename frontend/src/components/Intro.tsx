@@ -12,11 +12,18 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-export function Intro() {
+type Props = {
+  name: string;
+  title: string;
+  topic: string;
+  steps: string[];
+};
+
+export function Intro({ title, steps, topic, name }: Props) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const hasSeenIntro = localStorage.getItem('hasSeenWorkspaceIntro');
+    const hasSeenIntro = localStorage.getItem(name);
     if (!hasSeenIntro) {
       setIsVisible(true);
     }
@@ -24,7 +31,7 @@ export function Intro() {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    localStorage.setItem('hasSeenWorkspaceIntro', 'true');
+    localStorage.setItem(name, 'true');
   };
 
   return (
@@ -39,23 +46,17 @@ export function Intro() {
         >
           <Card className="w-80 bg-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-2xl font-bold">Workspaces</CardTitle>
+              <CardTitle className="text-2xl font-bold">{topic}</CardTitle>
               <Button variant="ghost" size="icon" onClick={handleDismiss}>
                 <X className="h-4 w-4" />
               </Button>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-2">
-                Workspaces in KudosCraft help you organize your projects and
-                collaborate with your team.
-              </p>
+              <p className="text-sm text-muted-foreground mb-2">{title}</p>
               <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                <li>
-                  Create multiple workspaces for different projects or teams
-                </li>
-                <li>
-                  Invite your clients to get a review for your work from hime
-                </li>
+                {steps.map((step, index) => (
+                  <li key={index}>{step}</li>
+                ))}
               </ul>
             </CardContent>
             <CardFooter>

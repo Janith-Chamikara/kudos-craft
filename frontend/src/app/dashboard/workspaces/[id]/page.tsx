@@ -1,15 +1,13 @@
 'use client';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useParams, useSearchParams } from 'next/navigation';
 import { LinkShareDialog } from './components/LinkShareDialog';
-import { useEffect, useState } from 'react';
 import { getAllTestimonialsByWorkspaceId } from '@/lib/actions';
 import { Status, Testimonial } from '@/lib/types';
-import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/Loader';
 import { TestimonialCard } from '../../components/Testimonial';
+import { Intro } from '@/components/Intro';
 
 export default function Workspaces() {
   const { id } = useParams();
@@ -20,7 +18,6 @@ export default function Workspaces() {
     queryFn: () => getAllTestimonialsByWorkspaceId(id as string),
   });
   const testimonials = (data?.data as Testimonial[]) ?? [];
-  console.log(testimonials);
 
   return (
     <main className="flex-1 overflow-y-auto">
@@ -33,11 +30,20 @@ export default function Workspaces() {
             <Input placeholder="Search..." className="w-64" />
             <LinkShareDialog
               link={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/create-review?workspaceId=${id}`}
-              description="test"
-              title="test"
+              workspaceId={id as string}
             />
           </div>
         </div>
+        <Intro
+          topic="Testimonials"
+          name="hasSeenTestimonialIntro"
+          title="Client Testimonials showcase the valuable feedback and reviews from your clients for each workspace."
+          steps={[
+            'View detailed feedback provided by your clients for completed work.',
+            'Easily manage and showcase testimonials specific to each project or workspace.',
+          ]}
+        />
+
         <Loader isLoading={isLoading}>
           <ul className="flex justify-start flex-row gap-4 flex-wrap">
             {testimonials.length > 0 ? (

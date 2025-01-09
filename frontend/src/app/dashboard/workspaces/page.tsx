@@ -24,7 +24,7 @@ import { DeleteWorkspaceDialog } from '../components/DeleteWorkspaceDialog';
 export default function Workspaces() {
   const [isFetched, setIsFetched] = useState<boolean>(false);
 
-  const { data, isLoading, error, refetch } = useQuery<Status | undefined>({
+  const { data, isLoading, refetch } = useQuery<Status | undefined>({
     queryKey: ['workspaces'],
     queryFn: () => getAllWorkspaces(),
   });
@@ -39,7 +39,16 @@ export default function Workspaces() {
             <CreateWorkspaceForm refetch={refetch} />
           </div>
         </div>
-        <Intro />
+        <Intro
+          topic="Workspaces"
+          name="hasSeenWorkspaceIntro"
+          title=" Workspaces in KudosCraft help you organize your projects and
+                collaborate with your team."
+          steps={[
+            'Create multiple workspaces for different projects or teams',
+            'Invite your clients to get a review for your work from him',
+          ]}
+        />
         <Loader isLoading={isLoading}>
           <ul className="flex flex-row gap-4 flex-wrap">
             {workspaces.map((workspace) => (
@@ -70,7 +79,7 @@ export default function Workspaces() {
                           <HiDotsHorizontal className="w-5 h-5" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="flex flex-col">
+                      <DropdownMenuContent className="flex flex-col gap-1">
                         <CreateWorkspaceForm
                           refetch={refetch}
                           isEditForm={true}

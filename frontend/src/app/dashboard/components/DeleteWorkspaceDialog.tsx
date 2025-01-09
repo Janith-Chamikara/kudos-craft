@@ -57,7 +57,7 @@ export function DeleteWorkspaceDialog({ workspaceId, refetch }: Props) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" className="flex justify-start">
           <MdDeleteOutline className="md:mr-2 h-4 w-4" />
           <span className="hidden md:block">Delete</span>
         </Button>

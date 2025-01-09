@@ -5,7 +5,11 @@ import { isAxiosError } from 'axios';
 import { getServerSession } from 'next-auth';
 import { FieldValues } from 'react-hook-form';
 import { authOptions } from './auth-options';
-import { CreateReviewFormInputs, CreateWorkspaceFormInputs } from './types';
+import {
+  CreateReviewFormInputs,
+  CreateWorkspaceFormInputs,
+  RequestTestimonialFormInputs,
+} from './types';
 
 export type Status = {
   status: 'default' | 'success' | 'error';
@@ -69,6 +73,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
       status: 'success',
     } as Status;
   } catch (error) {
+    console.log(error);
     if (isAxiosError(error)) {
       return {
         message: error.response?.data.message,
@@ -240,6 +245,34 @@ export const createReview = async (data: CreateReviewFormInputs) => {
   const session = await getServerSession(authOptions);
   try {
     const response = await axiosPublic.post('/testimonial/create', data, {
+      headers: {
+        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+      },
+    });
+    console.log(response);
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+
+export const requestReviewBySendingEmail = async (
+  data: RequestTestimonialFormInputs,
+) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.post('/testimonial/share', data, {
       headers: {
         Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
         Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,

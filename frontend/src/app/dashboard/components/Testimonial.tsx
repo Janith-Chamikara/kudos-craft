@@ -62,7 +62,7 @@ export function TestimonialCard({ testimonial }: Props) {
   };
 
   return (
-    <Card className="w-full max-w-[100%]">
+    <Card className="w-full">
       <CardHeader className="flex flex-row items-center gap-4">
         <Avatar className="w-12 h-12">
           <AvatarImage src={''} alt={name} />
@@ -76,8 +76,9 @@ export function TestimonialCard({ testimonial }: Props) {
       <CardContent>
         <div className="flex items-center mb-2">
           {renderStars(ratings)}
+
           <span className="ml-2 text-sm text-muted-foreground">
-            {ratings.toFixed(1)}
+            {ratings?.toFixed(1)}
           </span>
         </div>
         <p className="text-sm">{review}</p>

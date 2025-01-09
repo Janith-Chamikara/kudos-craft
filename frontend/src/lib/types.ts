@@ -13,6 +13,7 @@ import {
   createReviewSchema,
   createWorkspaceSchema,
   loginSchema,
+  requestTestimonialSchema,
   signUpSchema,
 } from '@/schemas/schema';
 import { create } from 'domain';
@@ -64,8 +65,10 @@ export type CreateWorkspaceFormInputs = z.infer<
 > & {
   ownerId: number;
 };
-
 export type CreateReviewFormInputs = z.infer<typeof createReviewSchema>;
+export type RequestTestimonialFormInputs = z.infer<
+  typeof requestTestimonialSchema
+>;
 
 export type LoginResponse = {
   user: {
