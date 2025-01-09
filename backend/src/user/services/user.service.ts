@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AccountSetupDto } from '../dto/user-account-setup.dto';
 import { User } from '@prisma/client';
@@ -52,12 +57,21 @@ export class UserService {
 
   async updateUserById(id: string, updatedUserContent: Partial<User>) {
     const isUserExists = await this.getUserById(id);
+    if (!isUserExists) {
+      throw new NotFoundException('User not found');
+    }
     const updatedUser = await this.prismaService.user.update({
       where: {
         id: isUserExists.id,
       },
       data: updatedUserContent,
     });
+
+    if (!updatedUser) {
+      throw new InternalServerErrorException(
+        'Error occurred during updating user',
+      );
+    }
     return updatedUser;
   }
 }

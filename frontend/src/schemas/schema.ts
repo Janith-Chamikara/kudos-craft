@@ -59,3 +59,7 @@ export const createReviewSchema = z.object({
     .max(5, 'Rating must be less than or equal to 5'),
   profileImage: z.any().optional(),
 });
+
+export const requestTestimonialSchema = z.object({
+  email: z.string().email(),
+});

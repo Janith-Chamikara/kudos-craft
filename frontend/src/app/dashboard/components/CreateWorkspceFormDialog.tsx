@@ -11,16 +11,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { toast } from 'react-hot-toast';
 import { createWorkspaceSchema } from '@/schemas/schema';
 import { CreateWorkspaceFormInputs, Status, Workspace } from '@/lib/types';
 import { useSession } from 'next-auth/react';
 import { createWorkspace, getWorkspaceById } from '@/lib/actions';
-import { DialogTrigger } from '@radix-ui/react-dialog';
 import { Edit, PlusCircle } from 'lucide-react';
 import FormField from '@/components/FormField';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 
 type Props = {
@@ -36,94 +36,106 @@ export function CreateWorkspaceForm({
   workspaceId,
   refetch,
 }: Props) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<CreateWorkspaceFormInputs>({
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
+
+  const form = useForm<CreateWorkspaceFormInputs>({
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
       name: '',
       description: '',
     },
   });
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    setValue,
+  } = form;
+
   useEffect(() => {
-    if (isEditForm) {
-      if (!workspaceId || workspaceId === undefined) {
-        toast.error('Workspace id not found');
-        return;
-      }
+    if (isEditForm && workspaceId) {
       const fetchWorkspaceById = async (id: string) => {
-        const response = await getWorkspaceById(id);
-        if (response?.status === 'success') {
-          const workspace = response.data as Workspace;
-          reset({
-            name: workspace.name,
-            description: workspace.description as string,
-          });
+        try {
+          const response = await getWorkspaceById(id);
+          if (response?.status === 'success') {
+            const workspace = response.data as Workspace;
+            reset({
+              name: workspace.name,
+              description: workspace.description || '',
+            });
+          }
+        } catch (error) {
+          toast.error('Failed to fetch workspace data');
         }
-        return;
       };
       fetchWorkspaceById(workspaceId);
     }
   }, [isEditForm, workspaceId]);
 
-  const { data: session } = useSession();
-
   const onSubmit = async (data: CreateWorkspaceFormInputs) => {
     if (!session) {
-      toast.error('You need to be logged in to delete a workspace');
+      toast.error('You need to be logged in to manage workspaces');
       return;
     }
 
     try {
-      data.ownerId = session?.user?.id as number;
+      data.ownerId = session.user.id as number;
       const response = await createWorkspace(data);
+
       if (response?.status === 'success') {
         toast.success(response.message || 'Workspace created successfully');
         setIsOpen(false);
-        await refetch();
+        setTimeout(() => {
+          refetch();
+        }, 100);
       } else {
         toast.error(response?.message || 'Failed to create workspace');
       }
     } catch (error) {
-      toast.error('An error occurred while create the workspace');
+      toast.error('An error occurred while managing the workspace');
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant={isEditForm ? 'outline' : 'default'}>
+        <Button
+          variant={isEditForm ? 'outline' : 'default'}
+          className="w-full justify-start"
+        >
           {isEditForm ? (
-            <Edit className="md:mr-2 h-4 w-4" />
+            <Edit className="mr-2 h-4 w-4" />
           ) : (
-            <PlusCircle className="md:mr-2 h-4 w-4" />
+            <PlusCircle className="mr-2 h-4 w-4" />
           )}
-          <span className="hidden md:block">
-            {isEditForm ? 'Edit ' : 'New Workspace'}
-          </span>
+          <span>{isEditForm ? 'Edit' : 'New Workspace'}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        aria-describedby="dialog-description"
+      >
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>
-              {isEditForm ? 'Edit ' : 'Create '} a workspace
+              {isEditForm ? 'Edit' : 'Create'} workspace
             </DialogTitle>
-            {!isEditForm && (
+            {isEditForm ? (
               <DialogDescription>
-                Start creating a specific workspace for your projects
+                Start editing this workspace
+              </DialogDescription>
+            ) : (
+              <DialogDescription>
+                Start creating your workspace
               </DialogDescription>
             )}
           </DialogHeader>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col items-start gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
+            <div className="flex flex-col items-start gap-2">
+              <Label htmlFor="name">Name</Label>
               <FormField
                 type="text"
                 placeholder="My New Workspace"
@@ -132,10 +144,8 @@ export function CreateWorkspaceForm({
                 error={errors.name}
               />
             </div>
-            <div className="flex flex-col items-start gap-4">
-              <Label htmlFor="description" className="text-right">
-                Description
-              </Label>
+            <div className="flex flex-col items-start gap-2">
+              <Label htmlFor="description">Description</Label>
               <FormField
                 type="text"
                 isTextArea
@@ -147,8 +157,16 @@ export function CreateWorkspaceForm({
             </div>
           </div>
           <DialogFooter>
-            <Button disabled={isSubmitting} type="submit">
-              {isEditForm ? 'Update' : 'Create'}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : isEditForm ? 'Update' : 'Create'}
             </Button>
           </DialogFooter>
         </form>
