@@ -12,7 +12,17 @@ export class TestimonialController {
     @Body()
     testimonialDto: TestimonialDto,
   ) {
-    return this.testimonialService.createWorkspace(testimonialDto);
+    return this.testimonialService.createTestimonial(testimonialDto);
+  }
+
+  @Post('share')
+  async shareTestimonialHandler(
+    @Body() data: { email: string; workspaceId: string },
+  ) {
+    return this.testimonialService.shareTestimonial(
+      data.workspaceId,
+      data.email,
+    );
   }
 
   @Get('get-all')

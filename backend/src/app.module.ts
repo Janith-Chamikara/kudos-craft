@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtStrategy } from './auth/services/strategies/jwt.strategy';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { TestimonialModule } from './testimonial/testimonial.module';
+import { EmailModule } from './email/email.module';
 @Module({
   imports: [
     UserModule,
@@ -20,6 +21,7 @@ import { TestimonialModule } from './testimonial/testimonial.module';
     }),
     WorkspaceModule,
     TestimonialModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [

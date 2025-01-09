@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -34,7 +35,7 @@ export class AuthService {
       where: { email: email },
     });
     if (isUserExists) {
-      throw new BadRequestException(
+      throw new ConflictException(
         'The email provided is already in use. Try again with another email',
       );
     }
