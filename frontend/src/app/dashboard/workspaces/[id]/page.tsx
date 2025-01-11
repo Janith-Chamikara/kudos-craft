@@ -8,16 +8,26 @@ import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/Loader';
 import { TestimonialCard } from '../../components/Testimonial';
 import { Intro } from '@/components/Intro';
+import { useState } from 'react';
+import { FilterDropdown, FilterState } from '@/components/FilterDropdown';
 
 export default function Workspaces() {
   const { id } = useParams();
   const searchParams = useSearchParams();
+  const [filters, setFilters] = useState<FilterState>({
+    dateRange: undefined,
+    searchQuery: '',
+  });
 
   const { data, isLoading, error } = useQuery<Status | undefined>({
-    queryKey: ['workspaces'],
-    queryFn: () => getAllTestimonialsByWorkspaceId(id as string),
+    queryKey: ['testimonials', filters],
+    queryFn: () => getAllTestimonialsByWorkspaceId(id as string, filters),
   });
+  const handleFilterApply = (newFilters: FilterState) => {
+    setFilters(newFilters);
+  };
   const testimonials = (data?.data as Testimonial[]) ?? [];
+  console.log(testimonials);
 
   return (
     <main className="flex-1 overflow-y-auto">
@@ -27,11 +37,19 @@ export default function Workspaces() {
             {searchParams.get('name')} / Testimonials
           </h1>
           <div className="flex space-x-2">
-            <Input placeholder="Search..." className="w-64" />
+            <Input
+              placeholder="Search..."
+              className="w-64"
+              value={filters.searchQuery}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, searchQuery: e.target.value }))
+              }
+            />
             <LinkShareDialog
               link={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/create-review?workspaceId=${id}`}
               workspaceId={id as string}
             />
+            <FilterDropdown onFilterApply={handleFilterApply} />
           </div>
         </div>
         <Intro
@@ -45,8 +63,8 @@ export default function Workspaces() {
         />
 
         <Loader isLoading={isLoading}>
-          <ul className="flex justify-start flex-row gap-4 flex-wrap">
-            {testimonials.length > 0 ? (
+          <ul className="flex flex-col w-full gap-4 ">
+            {testimonials?.length > 0 ? (
               testimonials.map((testimonial) => (
                 <TestimonialCard testimonial={testimonial} />
               ))

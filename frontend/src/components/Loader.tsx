@@ -20,18 +20,16 @@ export default function Loader({
     lg: 'h-12 w-12 border-4',
   };
 
-  return (
+  return isLoading ? (
     <div className="flex items-center justify-center min-h-[24rem]">
-      {isLoading ? (
-        <div className="flex flex-col items-center space-y-2">
-          <div
-            className={`animate-spin rounded-full ${sizeClasses[size]} border-t-transparent border-primary`}
-          />
-          <p className="text-sm font-medium">{text}</p>
-        </div>
-      ) : (
-        children
-      )}
+      <div className="flex flex-col items-center space-y-2">
+        <div
+          className={`animate-spin rounded-full ${sizeClasses[size]} border-t-transparent border-primary`}
+        />
+        <p className="text-sm font-medium">{text}</p>
+      </div>
     </div>
+  ) : (
+    children
   );
 }

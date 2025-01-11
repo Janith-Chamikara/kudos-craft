@@ -10,6 +10,7 @@ import {
   CreateWorkspaceFormInputs,
   RequestTestimonialFormInputs,
 } from './types';
+import { FilterState } from '@/components/FilterDropdown';
 
 export type Status = {
   status: 'default' | 'success' | 'error';
@@ -161,15 +162,21 @@ export const createWorkspace = async (data: CreateWorkspaceFormInputs) => {
     }
   }
 };
-export const getAllWorkspaces = async () => {
+export const getAllWorkspaces = async (filters: FilterState) => {
+  console.log(filters);
   const session = await getServerSession(authOptions);
   try {
-    const response = await axiosPublic.get('/workspace/get-all', {
-      headers: {
-        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
-        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+    const response = await axiosPublic.post(
+      `/workspace/user/get-all?userId=${session?.user.id}`,
+      filters,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
       },
-    });
+    );
+    console.log(response.data);
     return {
       status: 'success',
       data: response.data,
@@ -295,11 +302,15 @@ export const requestReviewBySendingEmail = async (
   }
 };
 
-export const getAllTestimonialsByWorkspaceId = async (workspaceId: string) => {
+export const getAllTestimonialsByWorkspaceId = async (
+  workspaceId: string,
+  filters: FilterState,
+) => {
   const session = await getServerSession(authOptions);
   try {
-    const response = await axiosPublic.get(
+    const response = await axiosPublic.post(
       `/testimonial/workspace/get-all?workspaceId=${workspaceId}`,
+      filters,
       {
         headers: {
           Authorization: `Bearer ${session?.tokenInfo.accessToken}`,

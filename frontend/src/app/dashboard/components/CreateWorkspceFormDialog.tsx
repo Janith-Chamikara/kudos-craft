@@ -104,14 +104,16 @@ export function CreateWorkspaceForm({
       <DialogTrigger asChild>
         <Button
           variant={isEditForm ? 'outline' : 'default'}
-          className="w-full justify-start"
+          className={`w-${isEditForm ? 'full' : 'max'} justify-center md:justify-start`}
         >
           {isEditForm ? (
-            <Edit className="mr-2 h-4 w-4" />
+            <Edit className="md:mr-2 h-4 w-4" />
           ) : (
-            <PlusCircle className="mr-2 h-4 w-4" />
+            <PlusCircle className="md:mr-2 h-4 w-4" />
           )}
-          <span>{isEditForm ? 'Edit' : 'New Workspace'}</span>
+          <span className="hidden md:block">
+            {isEditForm ? 'Edit' : 'New Workspace'}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent

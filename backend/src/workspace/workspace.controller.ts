@@ -6,7 +6,7 @@ import { WorkspaceDto } from './dto/workspace.dto';
 export class WorkspaceController {
   constructor(private readonly workspaceService: WorkspaceService) {}
   @Post('create')
-  async createWorkspace(
+  async createWorkspaceHandler(
     @Body()
     workspaceDto: WorkspaceDto,
   ) {
@@ -14,17 +14,32 @@ export class WorkspaceController {
   }
 
   @Get('get-all')
-  async getWorkspaces() {
+  async getWorkspacesHandler() {
     return this.workspaceService.getWorkspaces();
   }
 
+  @Post('/user/get-all')
+  async getWorkspacesByUserIdHandler(
+    @Query('userId') userId: string,
+    @Body()
+    filters: {
+      dateRange?: {
+        from: Date;
+        to: Date;
+      };
+      searchQuery?: string;
+    },
+  ) {
+    return this.workspaceService.getWorkspacesByUserId(userId, filters);
+  }
+
   @Get('get-one')
-  async getWorkspaceById(@Query('workspaceId') workspaceId: string) {
+  async getWorkspaceByIdHandler(@Query('workspaceId') workspaceId: string) {
     return this.workspaceService.getWorkspaceById(workspaceId);
   }
 
   @Delete('delete')
-  async deleteWorkspace(@Query('workspaceId') workspaceId: string) {
+  async deleteWorkspaceHandler(@Query('workspaceId') workspaceId: string) {
     return this.workspaceService.deleteWorkspace(workspaceId);
   }
 }
