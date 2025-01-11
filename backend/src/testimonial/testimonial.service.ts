@@ -55,14 +55,33 @@ export class TestimonialService {
     );
   }
 
-  async getTestimonialsByWorkspaceId(workspaceId: string) {
+  async getTestimonialsByWorkspaceId(
+    workspaceId: string,
+    filters?: { dateRange?: { from: Date; to: Date }; searchQuery?: string },
+  ) {
     if (!workspaceId) {
       throw new NotFoundException('Workspace Id is required');
     }
+    const whereClause: any = { workspaceId: workspaceId };
+
+    if (filters?.dateRange) {
+      whereClause.createdAt = {
+        gte: filters.dateRange.from,
+        lte: filters.dateRange.to,
+      };
+    }
+
+    if (filters?.searchQuery) {
+      const searchLower = filters.searchQuery.toLowerCase();
+      whereClause.OR = [
+        { name: { contains: searchLower } },
+        { email: { contains: searchLower } },
+      ];
+    }
+
     const testimonials = await this.prismaService.testimonial.findMany({
-      where: {
-        workspaceId,
-      },
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
     });
     return testimonials;
   }

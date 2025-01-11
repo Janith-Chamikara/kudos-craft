@@ -29,10 +29,21 @@ export class TestimonialController {
   async getTestimonialsHandler() {
     return this.testimonialService.getTestimonials();
   }
-  @Get('/workspace/get-all')
+  @Post('/workspace/get-all')
   async getTestimonialsByWorkspaceIdHandler(
     @Query('workspaceId') workspaceId: string,
+    @Body()
+    filters: {
+      dateRange?: {
+        from: Date;
+        to: Date;
+      };
+      searchQuery?: string;
+    },
   ) {
-    return this.testimonialService.getTestimonialsByWorkspaceId(workspaceId);
+    return this.testimonialService.getTestimonialsByWorkspaceId(
+      workspaceId,
+      filters,
+    );
   }
 }
