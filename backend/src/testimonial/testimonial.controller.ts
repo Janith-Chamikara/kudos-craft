@@ -29,6 +29,10 @@ export class TestimonialController {
   async getTestimonialsHandler() {
     return this.testimonialService.getTestimonials();
   }
+  @Get('analyze')
+  async analyzeTestimonialHandler(@Query('workspaceId') workspaceId: string) {
+    return this.testimonialService.analyzeTestimonials(workspaceId);
+  }
   @Post('/workspace/get-all')
   async getTestimonialsByWorkspaceIdHandler(
     @Query('workspaceId') workspaceId: string,
