@@ -2,7 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, BarChart, Settings, MessageSquare } from 'lucide-react';
+import {
+  Home,
+  Users,
+  BarChart,
+  Settings,
+  MessageSquare,
+  CodeXml,
+} from 'lucide-react';
 
 const sidebarItems = [
   { icon: Home, label: 'Overview', href: '/dashboard' },
@@ -11,6 +18,11 @@ const sidebarItems = [
     icon: MessageSquare,
     label: 'Testimonials',
     href: '/dashboard/testimonials',
+  },
+  {
+    icon: CodeXml,
+    label: 'Embed Testimonials',
+    href: '/dashboard/embed',
   },
   { icon: BarChart, label: 'Analytics', href: '/dashboard/analytics' },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },

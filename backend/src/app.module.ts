@@ -11,6 +11,7 @@ import { JwtStrategy } from './auth/services/strategies/jwt.strategy';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { TestimonialModule } from './testimonial/testimonial.module';
 import { EmailModule } from './email/email.module';
+import { AiIntegrationModule } from './ai-integration/ai-integration.module';
 @Module({
   imports: [
     UserModule,
@@ -22,6 +23,7 @@ import { EmailModule } from './email/email.module';
     WorkspaceModule,
     TestimonialModule,
     EmailModule,
+    AiIntegrationModule,
   ],
   controllers: [AppController],
   providers: [

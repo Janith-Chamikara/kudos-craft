@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { TestimonialDto } from './dto/testimonial.dto';
 import { EmailService } from 'src/email/email.service';
 import { ConfigService } from '@nestjs/config';
+import { AiIntegrationService } from 'src/ai-integration/ai-integration.service';
 
 @Injectable()
 export class TestimonialService {
@@ -15,6 +16,7 @@ export class TestimonialService {
     private readonly prismaService: PrismaService,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
+    private readonly aiIntegrationService: AiIntegrationService,
   ) {}
 
   async createTestimonial(testimonialDto: TestimonialDto) {
@@ -154,5 +156,51 @@ export class TestimonialService {
       deletedTestimonial,
       message: 'The testimonial has been successfully deleted.',
     };
+  }
+
+  async analyzeTestimonials(workspaceId: string) {
+    if (!workspaceId) {
+      throw new BadRequestException(
+        'Workspace Id is required for this process',
+      );
+    }
+
+    const testimonials = await this.prismaService.testimonial.findMany({
+      where: {
+        workspaceId: workspaceId,
+      },
+    });
+
+    const analyzedTestimonials = await Promise.all(
+      testimonials.map(async (testimonial) => {
+        if (!testimonial.isAnalyzed) {
+          const sentiment = await this.aiIntegrationService.classifyTestimonial(
+            testimonial.review,
+            testimonial.ratings,
+          );
+
+          const updatedTestimonial =
+            await this.prismaService.testimonial.update({
+              where: { id: testimonial.id },
+              data: {
+                isAnalyzed: true,
+                sentiment: sentiment,
+              },
+            });
+
+          return {
+            ...updatedTestimonial,
+            sentiment: sentiment,
+          };
+        }
+
+        return {
+          ...testimonial,
+          sentiment: testimonial.sentiment,
+        };
+      }),
+    );
+    console.log(analyzedTestimonials);
+    return analyzedTestimonials;
   }
 }

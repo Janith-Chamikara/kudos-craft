@@ -107,6 +107,8 @@ export type Testimonial = {
   ratings: number;
   review: string;
   createdAt: Date;
-  updatedat: Date;
+  updatedAt: Date;
+  isAnalyzed: boolean;
+  sentiment: string;
   workspaceId: string;
 };

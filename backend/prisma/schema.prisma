@@ -46,13 +46,15 @@ model Workspace {
 }
 
 model Testimonial {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  ratings   Float
-  review    String
-  createdAt DateTime @default(now())
-  updatedat DateTime @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  ratings    Float
+  review     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isAnalyzed Boolean  @default(false)
+  sentiment  String?
 
   //relations
   workspaceId String
