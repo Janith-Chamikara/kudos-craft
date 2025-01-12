@@ -11,9 +11,15 @@ import { Testimonial } from '@/lib/types';
 
 type Props = {
   testimonial: Testimonial;
+  getBackgroundColor?: (
+    sentiment: string | null | undefined,
+  ) =>
+    | ''
+    | 'bg-green-100 dark:bg-green-900/20'
+    | 'bg-red-100 dark:bg-red-900/20';
 };
 
-export function TestimonialCard({ testimonial }: Props) {
+export function TestimonialCard({ testimonial, getBackgroundColor }: Props) {
   const { name, email, ratings, review, createdAt } = testimonial;
 
   const initials = name
@@ -62,7 +68,9 @@ export function TestimonialCard({ testimonial }: Props) {
   };
 
   return (
-    <Card className="w-full">
+    <Card
+      className={`${getBackgroundColor ? getBackgroundColor(testimonial.sentiment) : ''}`}
+    >
       <CardHeader className="flex flex-row items-center gap-4">
         <Avatar className="w-12 h-12">
           <AvatarImage src={''} alt={name} />

@@ -333,3 +333,58 @@ export const getAllTestimonialsByWorkspaceId = async (
     }
   }
 };
+export const getAllTestimonials = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(`/testimonial/get-all`, {
+      headers: {
+        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+      },
+    });
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+
+export const analyzeAllTestimonialsByWorkspaceId = async (
+  workspaceId: string,
+) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(
+      `/testimonial/analyze?workspaceId=${workspaceId}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};

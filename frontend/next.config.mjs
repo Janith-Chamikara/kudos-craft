@@ -8,6 +8,7 @@ const nextConfig = {
       },
     ],
   },
+  transpilePackages: ['react-syntax-highlighter'],
 };
 
 export default nextConfig;
