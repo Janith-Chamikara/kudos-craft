@@ -88,8 +88,18 @@ export class TestimonialService {
     return testimonials;
   }
 
-  async getTestimonials() {
-    return await this.prismaService.testimonial.findMany();
+  async getTestimonials(userId: string) {
+    if (!userId) {
+      throw new BadRequestException('User Id is required for this process');
+    }
+    const testimonials = await this.prismaService.testimonial.findMany({
+      where: {
+        workspace: {
+          ownerId: userId,
+        },
+      },
+    });
+    return testimonials;
   }
 
   async getTestimonialById(id: string) {
@@ -158,16 +168,16 @@ export class TestimonialService {
     };
   }
 
-  async analyzeTestimonials(workspaceId: string) {
-    if (!workspaceId) {
-      throw new BadRequestException(
-        'Workspace Id is required for this process',
-      );
+  async analyzeTestimonials(userId: string) {
+    if (!userId) {
+      throw new BadRequestException('User Id is required for this process');
     }
 
     const testimonials = await this.prismaService.testimonial.findMany({
       where: {
-        workspaceId: workspaceId,
+        workspace: {
+          ownerId: userId,
+        },
       },
     });
 
@@ -202,5 +212,71 @@ export class TestimonialService {
     );
     console.log(analyzedTestimonials);
     return analyzedTestimonials;
+  }
+  async getSentimentOverTime() {
+    // Fetch all testimonials with the `createdAt` and `sentiment` fields
+    const testimonials = await this.prismaService.testimonial.findMany({
+      select: {
+        createdAt: true,
+        sentiment: true,
+      },
+    });
+
+    // Process the data to calculate sentiment scores grouped by date
+    const groupedResults = testimonials.reduce(
+      (acc, testimonial) => {
+        const date = testimonial.createdAt.toISOString().split('T')[0]; // Extract YYYY-MM-DD
+        const sentimentScore =
+          testimonial.sentiment === 'positive'
+            ? 1
+            : testimonial.sentiment === 'neutral'
+              ? 0.5
+              : 0;
+
+        if (!acc[date]) {
+          acc[date] = { totalScore: 0, count: 0 };
+        }
+
+        acc[date].totalScore += sentimentScore; // Add the sentiment score
+        acc[date].count++; // Increment the count for the date
+
+        return acc;
+      },
+      {} as Record<string, { totalScore: number; count: number }>,
+    );
+
+    // Convert the grouped results into an array with average sentiment per date
+    return Object.entries(groupedResults).map(
+      ([date, { totalScore, count }]) => ({
+        date,
+        sentiment: totalScore / count, // Calculate the average sentiment
+      }),
+    );
+  }
+
+  async getTestimonialsOverTime() {
+    const testimonials = await this.prismaService.testimonial.findMany({
+      select: {
+        createdAt: true,
+      },
+    });
+
+    const groupedResults = testimonials.reduce(
+      (acc, testimonial) => {
+        const date = testimonial.createdAt.toISOString().split('T')[0];
+        if (!acc[date]) {
+          acc[date] = 0;
+        }
+        acc[date]++;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    // Transform the results into an array of { date, count }
+    return Object.entries(groupedResults).map(([date, count]) => ({
+      date,
+      count,
+    }));
   }
 }
