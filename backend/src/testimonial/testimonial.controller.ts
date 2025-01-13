@@ -26,12 +26,12 @@ export class TestimonialController {
   }
 
   @Get('get-all')
-  async getTestimonialsHandler() {
-    return this.testimonialService.getTestimonials();
+  async getTestimonialsHandler(@Query('userId') userId: string) {
+    return this.testimonialService.getTestimonials(userId);
   }
   @Get('analyze')
-  async analyzeTestimonialHandler(@Query('workspaceId') workspaceId: string) {
-    return this.testimonialService.analyzeTestimonials(workspaceId);
+  async analyzeTestimonialHandler(@Query('userId') userId: string) {
+    return this.testimonialService.analyzeTestimonials(userId);
   }
   @Post('/workspace/get-all')
   async getTestimonialsByWorkspaceIdHandler(
@@ -49,5 +49,14 @@ export class TestimonialController {
       workspaceId,
       filters,
     );
+  }
+  @Get('sentiment-over-time')
+  getSentimentOverTime() {
+    return this.testimonialService.getSentimentOverTime();
+  }
+
+  @Get('count-over-time')
+  getTestimonialsOverTime() {
+    return this.testimonialService.getTestimonialsOverTime();
   }
 }

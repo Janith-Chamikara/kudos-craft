@@ -25,12 +25,10 @@ export default function Workspaces() {
   const onClick = async () => {
     setIsAnalyzing(true);
     try {
-      const response = await analyzeAllTestimonialsByWorkspaceId(
-        '662594b9-3b0b-4634-8413-6c4c0b6f5e72',
-      );
+      const response = await analyzeAllTestimonialsByWorkspaceId();
       console.log(response);
       if (response?.status === 'success') {
-        await refetch(); // Refetch testimonials to get the updated data
+        await refetch();
       }
     } catch (error) {
       console.error('Error analyzing testimonials:', error);

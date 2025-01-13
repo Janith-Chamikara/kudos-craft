@@ -336,7 +336,58 @@ export const getAllTestimonialsByWorkspaceId = async (
 export const getAllTestimonials = async () => {
   const session = await getServerSession(authOptions);
   try {
-    const response = await axiosPublic.get(`/testimonial/get-all`, {
+    const response = await axiosPublic.get(
+      `/testimonial/get-all?userId=${session?.user.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const getAnalyticsOfTestimonialOverTime = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(`/testimonial/count-over-time`, {
+      headers: {
+        Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+        Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+      },
+    });
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const getAnalyticsOfSentimentOverTime = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(`/testimonial/sentiment-over-time`, {
       headers: {
         Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
         Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
@@ -358,13 +409,11 @@ export const getAllTestimonials = async () => {
   }
 };
 
-export const analyzeAllTestimonialsByWorkspaceId = async (
-  workspaceId: string,
-) => {
+export const analyzeAllTestimonialsByWorkspaceId = async () => {
   const session = await getServerSession(authOptions);
   try {
     const response = await axiosPublic.get(
-      `/testimonial/analyze?workspaceId=${workspaceId}`,
+      `/testimonial/analyze?userId=${session?.user.id}`,
 
       {
         headers: {

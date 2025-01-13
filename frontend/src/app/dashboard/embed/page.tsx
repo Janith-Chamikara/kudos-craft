@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Button } from '@/components/ui/button';
@@ -24,37 +24,9 @@ import { InfiniteCarousel } from './components/InfiniteCarousal';
 import { GridLayout } from './components/GridLayout';
 import { CardTestimonials } from './components/CardTestimonials';
 import { QuoteTestimonials } from './components/QuoteTestimonials';
-
-const testimonials = [
-  {
-    id: 1,
-    author: 'John Doe',
-    content:
-      'This product is amazing! It has completely transformed my workflow.',
-  },
-  {
-    id: 2,
-    author: 'Jane Smith',
-    content:
-      'I cannot recommend this service enough. The team is incredibly responsive and helpful.',
-  },
-  {
-    id: 3,
-    author: 'Mike Johnson',
-    content: 'Absolutely love it! This has saved me countless hours of work.',
-  },
-  {
-    id: 4,
-    author: 'Emily Brown',
-    content:
-      'The attention to detail is impressive. Every feature is well thought out.',
-  },
-  {
-    id: 5,
-    author: 'Alex Lee',
-    content: 'Customer support is top-notch. They go above and beyond to help.',
-  },
-];
+import { getAllTestimonials } from '@/lib/actions';
+import { Testimonial } from '@/lib/types';
+import { Intro } from '@/components/Intro';
 
 const styles = [
   { id: 'carousel', name: 'Infinite Moving Carousel' },
@@ -66,8 +38,22 @@ const styles = [
 export default function TestimonialStylesPage() {
   const [selectedStyle, setSelectedStyle] = useState(styles[0].id);
   const [framework, setFramework] = useState('nextjs');
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await getAllTestimonials();
+        if (response?.status === 'success') {
+          setTestimonials(response.data as Testimonial[]);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
   const handleCopyCode = () => {
     const code = document.querySelector('pre')?.textContent;
     if (code) {
@@ -77,49 +63,11 @@ export default function TestimonialStylesPage() {
         .catch((err) => console.error('Failed to copy code: ', err));
     }
   };
-  const steps = [
-    {
-      title: 'Select a Style',
-      content:
-        'Choose your preferred testimonial display style from the dropdown menu.',
-      action: () => {},
-    },
-    {
-      title: 'Choose Framework',
-      content: 'Select whether you want to use Next.js or plain HTML/CSS.',
-      action: () => {},
-    },
-    {
-      title: 'Copy the Code',
-      content: 'Copy the provided code for your selected style and framework.',
-      action: handleCopyCode,
-    },
-    {
-      title: 'Implement',
-      content: 'Paste the code into your project and customize as needed.',
-      action: () => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-      },
-    },
-  ];
-
-  const handleNextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep((prev) => prev + 1);
-      steps[currentStep + 1].action();
-    } else {
-      setIsDialogOpen(false);
-    }
-  };
 
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="flex flex-col md:flex-row md:justify-between gap-2 md:items-center mb-6">
-        <h1 className="text-2xl font-bold">Testimonials</h1>
+        <h1 className="text-2xl font-bold">Testimonial Display Styles</h1>
 
         <div className="flex space-x-4">
           <Select value={selectedStyle} onValueChange={setSelectedStyle}>
@@ -143,6 +91,15 @@ export default function TestimonialStylesPage() {
           </Tabs>
         </div>
       </div>
+      <Intro
+        topic="Testimonials Embedding"
+        name="hasSeenEmbeddingIntro"
+        title="Client Testimonials showcase the valuable feedback and reviews from your clients for each workspace."
+        steps={[
+          'View detailed feedback provided by your clients for completed work.',
+          'Easily manage and showcase testimonials specific to each project or workspace.',
+        ]}
+      />
       <div>
         <h2 className="text-xl font-semibold mb-4">Live Preview</h2>
         <AnimatePresence mode="wait">
@@ -168,9 +125,9 @@ export default function TestimonialStylesPage() {
           </motion.div>
         </AnimatePresence>
       </div>
-      <div className="">
-        <div>
-          <h2 className="text-2xl font-semibold mb-4">Code Preview</h2>
+      <div>
+        <div className="w-full">
+          <h2 className="text-xl font-semibold mb-4">Code Preview</h2>
           <CodePreview style={selectedStyle} framework={framework} />
           <Button onClick={handleCopyCode} className="mt-4">
             Copy Code
