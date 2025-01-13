@@ -1,10 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface Testimonial {
-  id: number;
-  author: string;
-  content: string;
-}
+import { Testimonial } from '@/lib/types';
 
 interface CardTestimonialsProps {
   testimonials: Testimonial[];
@@ -16,10 +11,10 @@ export function CardTestimonials({ testimonials }: CardTestimonialsProps) {
       {testimonials.map((testimonial) => (
         <Card key={testimonial.id}>
           <CardHeader>
-            <CardTitle>{testimonial.author}</CardTitle>
+            <CardTitle>{testimonial.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{testimonial.content}</p>
+            <p>{testimonial.review}</p>
           </CardContent>
         </Card>
       ))}
