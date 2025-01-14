@@ -44,6 +44,27 @@ export const accountSetupSchema = z.object({
   }),
 });
 
+export const updateProfileSchema = z.object({
+  bio: z
+    .string()
+    .max(500, {
+      message: 'Bio must not be longer than 500 characters.',
+    })
+    .optional(),
+  firstName: z.string().min(2, {
+    message: 'First name must be at least 2 characters.',
+  }),
+  lastName: z.string().min(2, {
+    message: 'Last name must be at least 2 characters.',
+  }),
+  usage: z.enum(['personal', 'business']),
+  companyName: z.string().optional(),
+  industryType: z.string().optional(),
+  numberOfEmployees: z.number().optional(),
+  job: z.string().optional(),
+  subscriptionPlan: z.enum(['free', 'pro', 'enterprise']),
+});
+
 export const createWorkspaceSchema = z.object({
   name: z.string().min(1, 'Provide a name for this workspace'),
   description: z.string().min(1, 'Provide a description for this workspace'),
