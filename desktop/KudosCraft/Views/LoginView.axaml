@@ -1,0 +1,67 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:KudosCraft.ViewModels"
+             x:Class="KudosCraft.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+	<Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*,Auto,*" Background="Black">
+		<Border Grid.Row="1" Grid.Column="1"
+                Background="Black"
+                BorderBrush="White"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="32"
+                Width="400">
+			<StackPanel Spacing="16">
+				<TextBlock Text="Admin Login"
+                         FontSize="24"
+                         FontWeight="Bold"
+                         HorizontalAlignment="Center"
+                         Margin="0,0,0,16"
+                         Foreground="White"/>
+
+				<TextBox Text="{Binding Email}"
+                         Watermark="Email"
+                         Background="Black"
+                         BorderBrush="White"
+                         Foreground="White"
+                         CaretBrush="White"/>
+
+				<TextBox Text="{Binding Password}"
+                         PasswordChar="•"
+                         Watermark="Password"
+                         Background="Black"
+                         BorderBrush="White"
+                         Foreground="White"
+                         CaretBrush="White"/>
+
+				<!-- Error Message -->
+				<TextBlock Text="{Binding ErrorMessage}"
+                         Foreground="#FF0000"
+                         HorizontalAlignment="Center"
+                         IsVisible="{Binding HasError}"/>
+
+				<!-- Success Message -->
+				<TextBlock Text="{Binding SuccessMessage}"
+                         Foreground="#00FF00"
+                         HorizontalAlignment="Center"
+                         IsVisible="{Binding HasSuccess}"/>
+
+				<Button Content="Login"
+                        Command="{Binding LoginCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Background="White"
+                        Foreground="Black"
+                        BorderBrush="White"
+                        Padding="16,8">
+					<Button.Styles>
+						<Style Selector="Button:pointerover /template/ ContentPresenter">
+							<Setter Property="Background" Value="Black"/>
+							<Setter Property="Foreground" Value="White"/>
+						</Style>
+					</Button.Styles>
+				</Button>
+			</StackPanel>
+		</Border>
+	</Grid>
+</UserControl>
