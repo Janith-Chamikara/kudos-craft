@@ -17,6 +17,7 @@ import Logo from './Logo';
 import { signOut, useSession } from 'next-auth/react';
 import { refreshAccessToken } from '@/lib/actions';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface NavItem {
   label: string;
@@ -25,7 +26,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Home', href: '/' },
-  //   { label: 'Features', href: '/features' },
   { label: 'Pricing', href: '/#pricing' },
   { label: 'About', href: '/#howItWorks' },
   { label: 'FAQ', href: '/#FAQs' },
@@ -34,6 +34,7 @@ const navItems: NavItem[] = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
   const refresh = async () => {
@@ -51,6 +52,10 @@ export default function Navbar() {
   const handleLogOut = async () => {
     const response = await signOut({ callbackUrl: '/sign-in' });
     console.log(response);
+  };
+
+  const handleSettingsClick = () => {
+    router.push('/dashboard/settings');
   };
 
   return (
@@ -103,12 +108,13 @@ export default function Navbar() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSettingsClick}>
+                    Settings
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogOut}>
                     Log out
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={refresh}>Refresh</DropdownMenuItem>
+                  {/* <DropdownMenuItem onClick={refresh}>Refresh</DropdownMenuItem> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (

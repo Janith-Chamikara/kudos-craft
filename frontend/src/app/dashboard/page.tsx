@@ -1,7 +1,27 @@
+'use client';
+import Loader from '@/components/Loader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getTestimonialStats, getWorkspaceStats } from '@/lib/actions';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { BarChart, Star, Users } from 'lucide-react';
 
-export default async function DashboardOverview() {
+export default function DashboardOverview() {
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ['testimonialStats'],
+        queryFn: () => getTestimonialStats(),
+      },
+      {
+        queryKey: ['workspaceStats'],
+        queryFn: () => getWorkspaceStats(),
+      },
+    ],
+  });
+
+  const [testimonialStats, workspaceStats] = results;
+  console.log(workspaceStats.data?.data);
+  console.log(testimonialStats.data?.data);
   return (
     <main className="flex-1 overflow-y-auto">
       <div className="container mx-auto p-4">
@@ -18,7 +38,11 @@ export default async function DashboardOverview() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12</div>
+              <Loader size="sm" isLoading={results[0].isLoading}>
+                <div className="text-2xl font-bold">
+                  {(workspaceStats.data?.data as { count: number })?.count}
+                </div>
+              </Loader>
             </CardContent>
           </Card>
           <Card>
@@ -29,7 +53,18 @@ export default async function DashboardOverview() {
               <Star className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">284</div>
+              <Loader size="sm" isLoading={results[1].isLoading}>
+                <div className="text-2xl font-bold">
+                  {
+                    (
+                      testimonialStats.data?.data as {
+                        count: number;
+                        avg: number;
+                      }
+                    )?.count
+                  }
+                </div>
+              </Loader>
             </CardContent>
           </Card>
           <Card>
@@ -40,7 +75,19 @@ export default async function DashboardOverview() {
               <Star className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">4.7</div>
+              <Loader size="sm" isLoading={results[1].isLoading}>
+                {' '}
+                <div className="text-2xl font-bold">
+                  {
+                    (
+                      testimonialStats.data?.data as {
+                        count: number;
+                        avg: number;
+                      }
+                    )?.avg
+                  }
+                </div>
+              </Loader>
             </CardContent>
           </Card>
           <Card>

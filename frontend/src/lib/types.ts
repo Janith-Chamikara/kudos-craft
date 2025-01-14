@@ -15,6 +15,7 @@ import {
   loginSchema,
   requestTestimonialSchema,
   signUpSchema,
+  updateProfileSchema,
 } from '@/schemas/schema';
 import { create } from 'domain';
 
@@ -69,6 +70,7 @@ export type CreateReviewFormInputs = z.infer<typeof createReviewSchema>;
 export type RequestTestimonialFormInputs = z.infer<
   typeof requestTestimonialSchema
 >;
+export type UpdateProfileFormInputs = z.infer<typeof updateProfileSchema>;
 
 export type LoginResponse = {
   user: {
@@ -111,4 +113,23 @@ export type Testimonial = {
   isAnalyzed: boolean;
   sentiment: string;
   workspaceId: string;
+};
+
+export type FetchedUser = {
+  id: string;
+  email: string;
+  bio?: string | null;
+  firstName: string;
+  lastName: string;
+  usage: string;
+  companyName?: string | null;
+  industryType?: string | null;
+  numberOfEmployees?: number | null;
+  job?: string | null;
+  subscriptionPlan: string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+  password: string;
+  isInitialSetupCompleted: boolean;
 };

@@ -21,7 +21,7 @@ export default function Loader({
   };
 
   return isLoading ? (
-    <div className="flex items-center justify-center min-h-[24rem]">
+    <div className="flex items-center justify-center">
       <div className="flex flex-col items-center space-y-2">
         <div
           className={`animate-spin rounded-full ${sizeClasses[size]} border-t-transparent border-primary`}

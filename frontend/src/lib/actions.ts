@@ -9,6 +9,7 @@ import {
   CreateReviewFormInputs,
   CreateWorkspaceFormInputs,
   RequestTestimonialFormInputs,
+  UpdateProfileFormInputs,
 } from './types';
 import { FilterState } from '@/components/FilterDropdown';
 
@@ -74,7 +75,6 @@ export const refreshAccessToken = async (refreshToken: string) => {
       status: 'success',
     } as Status;
   } catch (error) {
-    console.log(error);
     if (isAxiosError(error)) {
       return {
         message: error.response?.data.message,
@@ -85,7 +85,6 @@ export const refreshAccessToken = async (refreshToken: string) => {
 };
 
 export const signUpAction = async (data: FieldValues) => {
-  console.log(data);
   try {
     const { email, firstName, lastName, password } = data;
     const response = await axiosPublic.post('/auth/sign-up', {
@@ -102,6 +101,64 @@ export const signUpAction = async (data: FieldValues) => {
     } as Status;
   } catch (error) {
     console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+
+export const getUserInfo = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(
+      `/user/get-info-single?userId=${session?.user.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.error(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const updateUserDetails = async (data: UpdateProfileFormInputs) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.put(
+      `/user/update?userId=${session?.user.id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.error(error);
     if (isAxiosError(error)) {
       return {
         status: 'error',
@@ -211,6 +268,34 @@ export const getWorkspaceById = async (workspaceId: string) => {
     } as Status;
   } catch (error) {
     console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const getWorkspaceStats = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(
+      `/workspace/get-stats?userId=${session?.user.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+    console.log(response);
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.error(error);
     if (isAxiosError(error)) {
       return {
         status: 'error',
@@ -352,6 +437,33 @@ export const getAllTestimonials = async () => {
     } as Status;
   } catch (error) {
     console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
+export const getTestimonialStats = async () => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.get(
+      `/testimonial/get-stats?userId=${session?.user.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.error(error);
     if (isAxiosError(error)) {
       return {
         status: 'error',
