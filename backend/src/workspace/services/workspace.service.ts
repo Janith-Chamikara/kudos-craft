@@ -144,4 +144,13 @@ export class WorkspaceService {
 
     return { message: 'Workspace deleted successfully' };
   }
+
+  async getWorkspaceStats(userId: string) {
+    const count = await this.prismaService.workspace.count({
+      where: {
+        ownerId: userId,
+      },
+    });
+    return { count };
+  }
 }

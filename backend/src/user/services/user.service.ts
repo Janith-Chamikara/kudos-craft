@@ -74,4 +74,19 @@ export class UserService {
     }
     return updatedUser;
   }
+
+  async deleteUserById(userId: string) {
+    if (!userId) {
+      throw new NotFoundException('Cannot find user Id');
+    }
+    return await this.prismaService.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+  }
+
+  async getAllUsers() {
+    return this.prismaService.user.findMany();
+  }
 }

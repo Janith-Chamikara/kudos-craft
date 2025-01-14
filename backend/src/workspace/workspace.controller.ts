@@ -42,4 +42,9 @@ export class WorkspaceController {
   async deleteWorkspaceHandler(@Query('workspaceId') workspaceId: string) {
     return this.workspaceService.deleteWorkspace(workspaceId);
   }
+
+  @Get('get-stats')
+  async getWorkspaceStatsHandler(@Query('userId') userId: string) {
+    return this.workspaceService.getWorkspaceStats(userId);
+  }
 }

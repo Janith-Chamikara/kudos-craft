@@ -279,4 +279,29 @@ export class TestimonialService {
       count,
     }));
   }
+
+  async getTestimonialStats(userId: string) {
+    const count = await this.prismaService.testimonial.count({
+      where: {
+        workspace: {
+          ownerId: userId,
+        },
+      },
+    });
+    let sum = 0;
+    const testimonials = await this.prismaService.testimonial.findMany({
+      where: {
+        workspace: {
+          ownerId: userId,
+        },
+      },
+    });
+    testimonials.map((testimonial) => (sum += testimonial.ratings));
+    const avg = sum / count;
+
+    return {
+      count,
+      avg,
+    };
+  }
 }

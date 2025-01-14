@@ -59,4 +59,9 @@ export class TestimonialController {
   getTestimonialsOverTime() {
     return this.testimonialService.getTestimonialsOverTime();
   }
+
+  @Get('get-stats')
+  async getTestimonialStatsHandler(@Query('userId') userId: string) {
+    return this.testimonialService.getTestimonialStats(userId);
+  }
 }
