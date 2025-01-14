@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:KudosCraft.ViewModels"
+             x:Class="KudosCraft.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+    <Grid ColumnDefinitions="250,*">
+        <!-- Sidebar -->
+        <Border Grid.Column="0" 
+                Background="Black" 
+                BorderBrush="White" 
+                BorderThickness="0,0,1,0">
+            <StackPanel Margin="16">
+                <TextBlock Text="KudosCraft"
+                          FontSize="24"
+                          FontWeight="Bold"
+                          Foreground="White"
+                          Margin="0,0,0,32"/>
+
+                <ListBox Background="Transparent"
+                         BorderThickness="0"
+                         SelectedItem="{Binding SelectedMenuItem}">
+                    <ListBoxItem Content="Workspaces" Tag="workspaces"/>
+                    <ListBoxItem Content="Testimonials" Tag="testimonials"/>
+                    <ListBoxItem Content="Users" Tag="users"/>
+                    <ListBoxItem Content="Analytics" Tag="analytics"/>
+
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="16,8"/>
+                            <Setter Property="Margin" Value="0,4"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover">
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:selected">
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ListBox.Styles>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="32" Background="Black">
+            <!-- Stats Cards -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*,*" Margin="0,0,0,32">
+                <Border Grid.Column="0" Margin="8"
+                        Background="Black"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="Total Workspaces" Foreground="White"/>
+                        <TextBlock Text="{Binding TotalWorkspaces}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold"
+                                 Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Margin="8"
+                        Background="Black"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="Total Testimonials" Foreground="White"/>
+                        <TextBlock Text="{Binding TotalTestimonials}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold"
+                                 Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Margin="8"
+                        Background="Black"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="Average Rating" Foreground="White"/>
+                        <TextBlock Text="{Binding AverageRating}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold"
+                                 Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="3" Margin="8"
+                        Background="Black"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="This Month" Foreground="White"/>
+                        <TextBlock Text="{Binding MonthlyGrowth}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold"
+                                 Foreground="White"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Content Area -->
+            <ContentControl Grid.Row="1" 
+                          Content="{Binding CurrentView}"/>
+        </Grid>
+    </Grid>
+</UserControl> 

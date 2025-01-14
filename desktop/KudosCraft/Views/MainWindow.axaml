@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KudosCraft.ViewModels"
+        xmlns:views="using:KudosCraft.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="KudosCraft.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="KudosCraft Admin"
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen"
+        Width="800" Height="600">
+
+	<views:LoginView>
+		<views:LoginView.DataContext>
+			<vm:LoginViewModel />
+		</views:LoginView.DataContext>
+	</views:LoginView>
+
+</Window>
