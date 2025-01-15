@@ -101,7 +101,7 @@ export class TestimonialService {
     });
     return testimonials;
   }
-  async getTestimonials(userId: string) {
+  async getTestimonials() {
     const testimonials = await this.prismaService.testimonial.findMany();
     return testimonials;
   }
