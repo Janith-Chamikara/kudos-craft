@@ -88,7 +88,7 @@ export class TestimonialService {
     return testimonials;
   }
 
-  async getTestimonials(userId: string) {
+  async getTestimonialsByUserId(userId: string) {
     if (!userId) {
       throw new BadRequestException('User Id is required for this process');
     }
@@ -99,6 +99,10 @@ export class TestimonialService {
         },
       },
     });
+    return testimonials;
+  }
+  async getTestimonials(userId: string) {
+    const testimonials = await this.prismaService.testimonial.findMany();
     return testimonials;
   }
 

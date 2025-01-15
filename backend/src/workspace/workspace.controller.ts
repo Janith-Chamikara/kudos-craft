@@ -1,6 +1,15 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { WorkspaceService } from './services/workspace.service';
 import { WorkspaceDto } from './dto/workspace.dto';
+import { Workspace } from '@prisma/client';
 
 @Controller('workspace')
 export class WorkspaceController {
@@ -46,5 +55,18 @@ export class WorkspaceController {
   @Get('get-stats')
   async getWorkspaceStatsHandler(@Query('userId') userId: string) {
     return this.workspaceService.getWorkspaceStats(userId);
+  }
+
+  @Put('update')
+  async updateWorkspaceById(
+    @Query('workspaceId') workspaceId: string,
+    @Body() updatedContent: Partial<Workspace>,
+  ) {
+    return this.workspaceService.updateWorkspace(workspaceId, updatedContent);
+  }
+
+  @Get('/admin/get-all')
+  async getWorkspacesForAdmin() {
+    return this.workspaceService.getWorkspaces();
   }
 }

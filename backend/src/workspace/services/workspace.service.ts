@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { WorkspaceDto } from '../dto/workspace.dto';
+import { Workspace } from '@prisma/client';
 
 @Injectable()
 export class WorkspaceService {
@@ -108,7 +109,7 @@ export class WorkspaceService {
     return workspace;
   }
 
-  async updateWorkspace(id: string, workspaceDto: WorkspaceDto) {
+  async updateWorkspace(id: string, updatedContent: Partial<Workspace>) {
     const existingWorkspace = await this.prismaService.workspace.findUnique({
       where: {
         id,
@@ -121,7 +122,7 @@ export class WorkspaceService {
       where: {
         id,
       },
-      data: workspaceDto,
+      data: updatedContent,
     });
     return {
       updatedWorkspace,

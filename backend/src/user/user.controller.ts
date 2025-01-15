@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { AccountSetupDto } from './dto/user-account-setup.dto';
 import { UserService } from './services/user.service';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
@@ -31,5 +39,10 @@ export class UserController {
   @Get('admin/get-all')
   async getAllUsersHandler() {
     return await this.userService.getAllUsers();
+  }
+
+  @Delete('admin/delete')
+  async deleteUserHandler(@Query('userId') userId: string) {
+    return await this.userService.deleteUserById(userId);
   }
 }
