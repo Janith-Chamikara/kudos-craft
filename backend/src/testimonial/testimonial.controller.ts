@@ -25,9 +25,14 @@ export class TestimonialController {
     );
   }
 
+  @Get('/admin/get-all')
+  async getTestimonialsHandler() {
+    return this.testimonialService.getTestimonials();
+  }
+
   @Get('get-all')
-  async getTestimonialsHandler(@Query('userId') userId: string) {
-    return this.testimonialService.getTestimonials(userId);
+  async getTestimonialsByUserIdHandler(@Query('userId') userId: string) {
+    return this.testimonialService.getTestimonialsByUserId(userId);
   }
   @Get('analyze')
   async analyzeTestimonialHandler(@Query('userId') userId: string) {
