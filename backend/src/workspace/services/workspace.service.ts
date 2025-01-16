@@ -39,35 +39,6 @@ export class WorkspaceService {
     return await this.prismaService.workspace.findMany();
   }
 
-  // async getWorkspacesByUserId(id: string, filters?: { dateRange?: { from: Date; to: Date }, searchQuery?: string }) {
-  //   if (!id) {
-  //     throw new NotFoundException("Couldn't find a user id");
-  //   }
-
-  //   let whereClause: any = { ownerId: id };
-
-  //   if (filters?.dateRange) {
-  //     whereClause.createdAt = {
-  //       gte: filters.dateRange.from,
-  //       lte: filters.dateRange.to,
-  //     };
-  //   }
-
-  //   if (filters?.searchQuery) {
-  //     whereClause.OR = [
-  //       { name: { contains: filters.searchQuery, mode: 'insensitive' } },
-  //       { description: { contains: filters.searchQuery, mode: 'insensitive' } },
-  //     ];
-  //   }
-
-  //   const workspaces = await this.prismaService.workspace.findMany({
-  //     where: whereClause,
-  //     orderBy: { createdAt: 'desc' },
-  //   });
-
-  //   return workspaces;
-  // }
-
   async getWorkspacesByUserId(
     id: string,
     filters?: { dateRange?: { from: Date; to: Date }; searchQuery?: string },
