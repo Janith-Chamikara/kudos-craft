@@ -16,6 +16,7 @@ export class WorkspaceService {
       await this.prismaService.workspace.findFirst({
         where: {
           name: workspaceDto.name,
+          ownerId: workspaceDto.ownerId,
         },
       });
     if (isWorkspaceWithSameNameExists) {
