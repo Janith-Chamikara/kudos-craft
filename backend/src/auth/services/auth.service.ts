@@ -10,6 +10,7 @@ import {
   fifteenMinutesFromNow,
   getHashedPassword,
   thirtyDaysFromNow,
+  threeHourFromNow,
 } from 'src/utils/utils';
 import { comparePassword } from 'src/utils/utils';
 import { User } from '@prisma/client';
@@ -95,7 +96,8 @@ export class AuthService {
   generateAccessToken(payload: Omit<User, 'password'>) {
     return this.jwtService.sign(payload, {
       secret: this.configService.getOrThrow('ACCESS_TOKEN_SECRET'),
-      expiresIn: fifteenMinutesFromNow(),
+      expiresIn:
+        payload.role === 'admin' ? threeHourFromNow() : fifteenMinutesFromNow(),
     });
   }
 

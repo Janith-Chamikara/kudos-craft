@@ -22,6 +22,8 @@ export const thirtyDaysFromNow = () => Date.now() + 30 * 24 * 60 * 60 * 1000;
 
 export const fifteenMinutesFromNow = () => Date.now() + 5;
 
+export const threeHourFromNow = () => Date.now() + 60 * 60 * 1000 * 3;
+
 export const fiveMinutesAgo = () => new Date(Date.now() - 5 * 60 * 1000);
 
 export const oneHourFromNow = () => new Date(Date.now() + 60 * 60 * 1000);
