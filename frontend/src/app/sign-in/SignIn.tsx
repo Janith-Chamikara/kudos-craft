@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { boolean } from 'zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SignIn() {
   const {
@@ -36,17 +36,19 @@ export default function SignIn() {
       return;
     } else if (result?.ok) {
       toast.success('Login successful');
-      router.refresh();
     }
   };
 
-  if (status === 'authenticated') {
-    if (session.user.isInitialSetupCompleted) {
-      router.push('/dashboard');
-    } else {
-      router.push('/account-setup');
+  useEffect(() => {
+    if (status === 'authenticated' && session) {
+      if (session.user.isInitialSetupCompleted) {
+        router.push('/dashboard');
+      } else {
+        router.push('/account-setup');
+      }
     }
-  }
+  }, [status, session, router]);
+
   return (
     <div className="flex min-h-[100dvh] items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-6 rounded-2xl bg-card p-8 shadow-xl sm:p-10">

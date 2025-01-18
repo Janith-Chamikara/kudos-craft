@@ -13,10 +13,11 @@ import SubmitButton from '@/components/submit-button';
 import { SignUpInputs } from '@/lib/types';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function SignUp() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const {
     register,
     formState: { errors, isSubmitting },
@@ -24,6 +25,15 @@ export default function SignUp() {
   } = useForm<SignUpInputs>({
     resolver: zodResolver(signUpSchema),
   });
+  useEffect(() => {
+    if (status === 'authenticated') {
+      if (session.user.isInitialSetupCompleted) {
+        router.push('/dashboard');
+      } else {
+        router.push('/account-setup');
+      }
+    }
+  }, [session, status, router]);
   console.log(errors);
   const onSubmit = async (data: SignUpInputs) => {
     const response = await signUpAction(data);
