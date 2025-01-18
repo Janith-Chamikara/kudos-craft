@@ -301,7 +301,7 @@ export class TestimonialService {
       },
     });
     testimonials.map((testimonial) => (sum += testimonial.ratings));
-    const avg = sum / count;
+    const avg = (sum / count).toFixed(2);
 
     return {
       count,

@@ -17,6 +17,7 @@ export class UserService {
   ) {}
 
   async setAccount(accountSetupDto: AccountSetupDto, currentUser: User) {
+    console.log(accountSetupDto);
     if (accountSetupDto.usage === 'PERSONAL') {
       const jobField = accountSetupDto?.jobField;
       currentUser.job = jobField;
@@ -24,8 +25,14 @@ export class UserService {
     } else {
       const companyName = accountSetupDto.companyName;
       const industryType = accountSetupDto.industryType;
+      const numberOfEmployees = accountSetupDto.numberOfEmployees;
 
-      await this.updateUserById(currentUser.id, { companyName, industryType });
+      await this.updateUserById(currentUser.id, {
+        usage: 'business',
+        companyName,
+        industryType,
+        numberOfEmployees,
+      });
     }
     //workspace
     const workspaceName = accountSetupDto.workspace.name;
