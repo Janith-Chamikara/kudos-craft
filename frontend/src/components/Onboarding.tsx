@@ -181,6 +181,7 @@ export default function OnboardingFlow(): JSX.Element {
   );
 
   const onSubmit = async (data: AccountSetupFormInputs) => {
+    console.log(data);
     const response = await setupAccountDetails(data);
     if (response) {
       if (response.status === 'success') {
@@ -242,7 +243,7 @@ export default function OnboardingFlow(): JSX.Element {
           width={windowSize.width}
           height={windowSize.height}
           recycle={false}
-          numberOfPieces={1500}
+          numberOfPieces={400}
         />
       )}
       <div className="w-full max-w-2xl bg-card p-8 rounded-lg shadow-lg">

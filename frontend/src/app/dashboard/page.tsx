@@ -20,8 +20,6 @@ export default function DashboardOverview() {
   });
 
   const [testimonialStats, workspaceStats] = results;
-  console.log(workspaceStats.data?.data);
-  console.log(testimonialStats.data?.data);
   return (
     <main className="flex-1 overflow-y-auto">
       <div className="container mx-auto p-4">
