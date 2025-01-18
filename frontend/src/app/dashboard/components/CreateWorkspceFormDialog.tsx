@@ -17,7 +17,11 @@ import { toast } from 'react-hot-toast';
 import { createWorkspaceSchema } from '@/schemas/schema';
 import { CreateWorkspaceFormInputs, Status, Workspace } from '@/lib/types';
 import { useSession } from 'next-auth/react';
-import { createWorkspace, getWorkspaceById } from '@/lib/actions';
+import {
+  createWorkspace,
+  getWorkspaceById,
+  updateWorkspace,
+} from '@/lib/actions';
 import { Edit, PlusCircle } from 'lucide-react';
 import FormField from '@/components/FormField';
 import { useEffect, useState } from 'react';
@@ -80,22 +84,40 @@ export function CreateWorkspaceForm({
       toast.error('You need to be logged in to manage workspaces');
       return;
     }
+    if (!isEditForm) {
+      try {
+        data.ownerId = session.user.id as number;
+        const response = await createWorkspace(data);
 
-    try {
-      data.ownerId = session.user.id as number;
-      const response = await createWorkspace(data);
-
-      if (response?.status === 'success') {
-        toast.success(response.message || 'Workspace created successfully');
-        setIsOpen(false);
-        setTimeout(() => {
-          refetch();
-        }, 100);
-      } else {
-        toast.error(response?.message || 'Failed to create workspace');
+        if (response?.status === 'success') {
+          toast.success(response.message || 'Workspace created successfully');
+          setIsOpen(false);
+          setTimeout(() => {
+            refetch();
+          }, 100);
+        } else {
+          toast.error(response?.message || 'Failed to create workspace');
+        }
+      } catch (error) {
+        toast.error('An error occurred while managing the workspace');
       }
-    } catch (error) {
-      toast.error('An error occurred while managing the workspace');
+    } else {
+      try {
+        if (!workspaceId) return;
+        const response = await updateWorkspace(workspaceId, data);
+
+        if (response?.status === 'success') {
+          toast.success(response.message || 'Workspace updated successfully');
+          setIsOpen(false);
+          setTimeout(() => {
+            refetch();
+          }, 100);
+        } else {
+          toast.error(response?.message || 'Failed to create workspace');
+        }
+      } catch (error) {
+        toast.error('An error occurred while managing the workspace');
+      }
     }
   };
 

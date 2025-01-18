@@ -1,5 +1,5 @@
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodePreviewProps {
   style: string;
@@ -26,7 +26,7 @@ export function CodePreview({ style, framework }: CodePreviewProps) {
     <div className="rounded-md overflow-hidden">
       <SyntaxHighlighter
         language={framework === 'nextjs' ? 'jsx' : 'html'}
-        style={tomorrow}
+        style={vscDarkPlus}
       >
         {getCode()}
       </SyntaxHighlighter>
