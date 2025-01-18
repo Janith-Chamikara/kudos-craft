@@ -45,14 +45,20 @@ export default function TestimonialsCountChart() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState('90d');
+  const [timeRange, setTimeRange] = useState('all');
+
+  console.log(testimonialData);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const response = await getAnalyticsOfTestimonialOverTime();
       if (response?.status === 'success') {
-        setTestimonialData(response.data as TestimonialCountData[]);
+        setTestimonialData(
+          (response.data as TestimonialCountData[]).sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+          ),
+        );
       } else {
         toast.error('Error fetching analytics data');
         setError(
@@ -66,16 +72,40 @@ export default function TestimonialsCountChart() {
 
   const filteredData = testimonialData.filter((item) => {
     const date = new Date(item.date);
-    const referenceDate = new Date();
-    let daysToSubtract = 90;
-    if (timeRange === '30d') {
-      daysToSubtract = 30;
-    } else if (timeRange === '7d') {
-      daysToSubtract = 7;
+    const now = new Date();
+    const startDate = new Date();
+
+    switch (timeRange) {
+      case 'all':
+        return true;
+      case 'last-year':
+        // Last year's data
+        startDate.setFullYear(now.getFullYear() - 1);
+        startDate.setMonth(0);
+        startDate.setDate(1);
+        const endDate = new Date(startDate);
+        endDate.setFullYear(startDate.getFullYear() + 1);
+        return date >= startDate && date < endDate;
+
+      case 'this-year':
+        // This year's data
+        startDate.setMonth(0);
+        startDate.setDate(1);
+        return date >= startDate;
+
+      case '90d':
+        // Last 90 days
+        startDate.setDate(now.getDate() - 90);
+        return date >= startDate;
+
+      case '7d':
+        // Last 7 days
+        startDate.setDate(now.getDate() - 7);
+        return date >= startDate;
+
+      default:
+        return true;
     }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
   });
 
   const chartConfig = {
@@ -88,6 +118,8 @@ export default function TestimonialsCountChart() {
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
+
+  console.log(filteredData);
 
   return (
     <Card>
@@ -103,26 +135,32 @@ export default function TestimonialsCountChart() {
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a time range"
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder="This Year" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
+            <SelectItem value="All" className="rounded-lg">
+              All
             </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
+            <SelectItem value="this-year" className="rounded-lg">
+              This Year
+            </SelectItem>
+            <SelectItem value="last-year" className="rounded-lg">
+              Last Year
+            </SelectItem>
+            <SelectItem value="90d" className="rounded-lg">
+              Last 3 Months
             </SelectItem>
             <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
+              Last 7 Days
             </SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>
-      <Loader isLoading={isLoading}>
+      <Loader adjustHeight={true} isLoading={isLoading}>
         <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
           <ChartContainer
             config={chartConfig}
-            className="aspect-auto h-[500px] w-full"
+            className="aspect-auto h-[400px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={filteredData}>

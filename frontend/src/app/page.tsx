@@ -9,6 +9,7 @@ import StepInstruction from '@components/StepInstruction';
 import InfiniteScroll from '@components/infiniteScroll/InfiniteScroll';
 import PricingSection from '@components/pricing/PricingSection';
 import HeroSection from '@/components/HeroSection';
+import Pricing from '@/components/Pricing';
 
 export default function Home() {
   return (
@@ -47,7 +48,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl mb-12 text-center">
             Choose your plan
           </h2>
-          <PricingSection />
+          <Pricing />
         </section>
 
         <section id="FAQs" className="py-16 sm:py-24">

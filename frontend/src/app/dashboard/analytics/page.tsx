@@ -1,14 +1,7 @@
 'use client';
-import { Input } from '@/components/ui/input';
-import { getAllTestimonialsByWorkspaceId } from '@/lib/actions';
-import { Status, Testimonial } from '@/lib/types';
-import { useQuery } from '@tanstack/react-query';
-import Loader from '@/components/Loader';
+
 import { Intro } from '@/components/Intro';
-import { useState } from 'react';
-import { FilterDropdown, FilterState } from '@/components/FilterDropdown';
 import TestimonialsCountChart from './components/TestimonialCountChart';
-import SentimentChart from './components/SentimentChart';
 
 export default function Workspaces() {
   return (

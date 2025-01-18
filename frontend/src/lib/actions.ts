@@ -219,6 +219,34 @@ export const createWorkspace = async (data: CreateWorkspaceFormInputs) => {
     }
   }
 };
+export const updateWorkspace = async (workspaceId: string, data: object) => {
+  const session = await getServerSession(authOptions);
+  try {
+    const response = await axiosPublic.put(
+      `/workspace/update?workspaceId=${workspaceId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.tokenInfo.accessToken}`,
+          Cookie: `refreshToken=${session?.tokenInfo.refreshToken}`,
+        },
+      },
+    );
+    return {
+      status: 'success',
+      data: response.data,
+      message: response.data.message as string,
+    } as Status;
+  } catch (error) {
+    console.log(error);
+    if (isAxiosError(error)) {
+      return {
+        status: 'error',
+        message: error.response?.data.message,
+      } as Status;
+    }
+  }
+};
 export const getAllWorkspaces = async (filters: FilterState) => {
   console.log(filters);
   const session = await getServerSession(authOptions);

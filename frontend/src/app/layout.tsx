@@ -5,6 +5,7 @@ import './globals.css';
 import React from 'react';
 import ThemeContextProvider from '@/context/theme-context-provider';
 import { Toaster } from 'react-hot-toast';
+import { Toaster as Sonner } from 'sonner';
 import ThemeSwitch from '../components/ThemeSwitch';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -63,6 +64,7 @@ export default function RootLayout({
                 }}
                 position="top-right"
               />
+              <Sonner className="bg-primary" position="top-right" />
             </ThemeContextProvider>
           </QueryContextProvider>
         </AuthContextProvider>

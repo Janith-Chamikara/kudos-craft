@@ -25,8 +25,11 @@ import { GridLayout } from './components/GridLayout';
 import { CardTestimonials } from './components/CardTestimonials';
 import { QuoteTestimonials } from './components/QuoteTestimonials';
 import { getAllTestimonials } from '@/lib/actions';
-import { Testimonial } from '@/lib/types';
+import { Status, Testimonial } from '@/lib/types';
 import { Intro } from '@/components/Intro';
+import Loader from '@/components/Loader';
+import { useQuery } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const styles = [
   { id: 'carousel', name: 'Infinite Moving Carousel' },
@@ -38,28 +41,18 @@ const styles = [
 export default function TestimonialStylesPage() {
   const [selectedStyle, setSelectedStyle] = useState(styles[0].id);
   const [framework, setFramework] = useState('nextjs');
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const response = await getAllTestimonials();
-        if (response?.status === 'success') {
-          setTestimonials(response.data as Testimonial[]);
-        }
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-      }
-    };
-
-    fetchTestimonials();
-  }, []);
+  const { data, isLoading, error } = useQuery<Status | undefined>({
+    queryKey: ['testimonials'],
+    queryFn: () => getAllTestimonials(),
+  });
+  const testimonials = (data?.data as Testimonial[]) ?? [];
   const handleCopyCode = () => {
     const code = document.querySelector('pre')?.textContent;
     if (code) {
       navigator.clipboard
         .writeText(code)
-        .then(() => alert('Code copied to clipboard!'))
+        .then(() => toast.success('Code copied to clipboard!'))
         .catch((err) => console.error('Failed to copy code: ', err));
     }
   };
@@ -100,40 +93,50 @@ export default function TestimonialStylesPage() {
           'Easily manage and showcase testimonials specific to each project or workspace.',
         ]}
       />
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Live Preview</h2>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedStyle}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {selectedStyle === 'carousel' && (
-              <InfiniteCarousel testimonials={testimonials} />
-            )}
-            {selectedStyle === 'grid' && (
-              <GridLayout testimonials={testimonials} />
-            )}
-            {selectedStyle === 'cards' && (
-              <CardTestimonials testimonials={testimonials} />
-            )}
-            {selectedStyle === 'quotes' && (
-              <QuoteTestimonials testimonials={testimonials} />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      <div>
-        <div className="w-full">
-          <h2 className="text-xl font-semibold mb-4">Code Preview</h2>
-          <CodePreview style={selectedStyle} framework={framework} />
-          <Button onClick={handleCopyCode} className="mt-4">
-            Copy Code
-          </Button>
-        </div>
-      </div>
+      <Loader isLoading={isLoading}>
+        {testimonials.length > 0 ? (
+          <>
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Live Preview</h2>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedStyle}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {selectedStyle === 'carousel' && (
+                    <InfiniteCarousel testimonials={testimonials} />
+                  )}
+                  {selectedStyle === 'grid' && (
+                    <GridLayout testimonials={testimonials} />
+                  )}
+                  {selectedStyle === 'cards' && (
+                    <CardTestimonials testimonials={testimonials} />
+                  )}
+                  {selectedStyle === 'quotes' && (
+                    <QuoteTestimonials testimonials={testimonials} />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div>
+              <div className="w-full">
+                <h2 className="text-xl font-semibold mb-4">Code Preview</h2>
+                <CodePreview style={selectedStyle} framework={framework} />
+                <Button onClick={handleCopyCode} className="mt-4">
+                  Copy Code
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="text-sm">
+            Oops it seems you don't have any testimonials yet
+          </p>
+        )}
+      </Loader>
     </div>
   );
 }
