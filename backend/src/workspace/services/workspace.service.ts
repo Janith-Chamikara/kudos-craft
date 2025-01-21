@@ -111,6 +111,11 @@ export class WorkspaceService {
     if (!isWorkspaceExists) {
       throw new NotFoundException("Couldn't find the workspace");
     }
+    await this.prismaService.testimonial.deleteMany({
+      where: {
+        workspaceId: id,
+      },
+    });
     await this.prismaService.workspace.delete({
       where: { id },
     });

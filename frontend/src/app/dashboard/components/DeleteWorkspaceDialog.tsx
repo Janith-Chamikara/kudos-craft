@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import { deleteWorkspace } from '@/lib/actions';
 import { MdDeleteOutline } from 'react-icons/md';

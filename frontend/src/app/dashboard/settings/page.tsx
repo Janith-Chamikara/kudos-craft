@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { getUserInfo, updateUserDetails } from '@/lib/actions';
 import { FetchedUser, UpdateProfileFormInputs } from '@/lib/types';
 import { updateProfileSchema } from '@/schemas/schema';
@@ -257,7 +257,11 @@ export default function UpdateProfileForm() {
                 <Button type="submit" disabled={form.formState.isSubmitting}>
                   {form.formState.isSubmitting ? 'Updating...' : 'Update'}
                 </Button>
-                <Button onClick={handleLogOut} variant={'secondary'}>
+                <Button
+                  type="button"
+                  onClick={handleLogOut}
+                  variant={'secondary'}
+                >
                   Log out
                 </Button>
               </div>

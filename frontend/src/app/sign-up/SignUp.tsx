@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signUpSchema } from '@/schemas/schema';
 import { signUpAction } from '@/lib/actions';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import SubmitButton from '@/components/submit-button';
 import { SignUpInputs } from '@/lib/types';
 import { signIn, useSession } from 'next-auth/react';

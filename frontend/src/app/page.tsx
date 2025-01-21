@@ -1,13 +1,7 @@
 import AnimationContainer from '@/components/AnimationContainer';
-import {
-  AccordianItems,
-  howToDoItInstructions,
-  FAQs,
-} from '@/components/Assests';
+import { howToDoItInstructions, FAQs } from '@/components/Assests';
 import CustomAccordion from '@components/CustomAccordian';
 import StepInstruction from '@components/StepInstruction';
-import InfiniteScroll from '@components/infiniteScroll/InfiniteScroll';
-import PricingSection from '@components/pricing/PricingSection';
 import HeroSection from '@/components/HeroSection';
 import Pricing from '@/components/Pricing';
 
@@ -44,8 +38,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="pricing" className="py-16 sm:py-24">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl mb-12 text-center">
+        <section className="py-16 sm:py-24">
+          <h2
+            id="pricing"
+            className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl mb-12 text-center"
+          >
             Choose your plan
           </h2>
           <Pricing />

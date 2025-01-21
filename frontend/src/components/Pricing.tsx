@@ -223,23 +223,23 @@ export default function Pricing() {
 
   const plans = [
     {
-      title: 'Basic',
-      monthlyPrice: 10,
-      yearlyPrice: 100,
+      title: 'Free',
+      monthlyPrice: 0,
+      yearlyPrice: 50,
       description: 'Essential features you need to get started',
       features: [
         'Example Feature Number 1',
         'Example Feature Number 2',
         'Example Feature Number 3',
       ],
-      priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID,
-      priceIdYearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID,
+      priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY,
+      priceIdYearly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_YEARLY,
       actionLabel: 'Get Started',
     },
     {
       title: 'Pro',
-      monthlyPrice: 25,
-      yearlyPrice: 250,
+      monthlyPrice: 5,
+      yearlyPrice: 50,
       description: 'Perfect for owners of small & medium businessess',
       features: [
         'Example Feature Number 1',

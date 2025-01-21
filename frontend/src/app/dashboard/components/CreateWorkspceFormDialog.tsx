@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 import { createWorkspaceSchema } from '@/schemas/schema';
 import { CreateWorkspaceFormInputs, Status, Workspace } from '@/lib/types';
 import { useSession } from 'next-auth/react';

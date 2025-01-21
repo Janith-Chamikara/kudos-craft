@@ -295,12 +295,15 @@ export async function POST(req: NextRequest) {
     },
   );
   const reqText = await req.text();
+  console.log(supabase);
+  console.log(reqText);
   return webhooksHandler(reqText, req, supabase);
 }
 
 async function getCustomerEmail(customerId: string): Promise<string | null> {
   try {
     const customer = await stripe.customers.retrieve(customerId);
+    console.log(customer);
     return (customer as Stripe.Customer).email;
   } catch (error) {
     console.error('Error fetching customer:', error);
@@ -315,6 +318,8 @@ async function handleSubscriptionEvent(
 ) {
   const subscription = event.data.object as Stripe.Subscription;
   const customerEmail = await getCustomerEmail(subscription.customer as string);
+  console.log('CUSTOMER EMAIL', customerEmail);
+  console.log('SUBSCRIPTION', subscription);
 
   if (!customerEmail) {
     return NextResponse.json({
@@ -348,6 +353,8 @@ async function handleSubscriptionEvent(
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
     userId: user.id,
   };
+
+  console.log('SUBSCRIPTION DATA', subscriptionData);
 
   if (type === 'deleted') {
     // Update subscription status
