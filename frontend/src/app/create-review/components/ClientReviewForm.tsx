@@ -14,7 +14,7 @@ import FormField from '@/components/FormField';
 import Image from 'next/image';
 import avatar_img from '@public/avatar.jpeg';
 import { useRouter, useSearchParams } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { createReview } from '@/lib/actions';
 
 const StarRating = ({

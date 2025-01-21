@@ -8,10 +8,9 @@ import { Icons } from '@/components/ui/icons';
 import FormField from '@/components/FormField';
 import { loginSchema } from '@/schemas/schema';
 import SubmitButton from '@/components/submit-button';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { boolean } from 'zod';
 import { useEffect, useState } from 'react';
 
 export default function SignIn() {

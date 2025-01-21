@@ -4,8 +4,7 @@ import { cn } from '@/lib/utils';
 import './globals.css';
 import React from 'react';
 import ThemeContextProvider from '@/context/theme-context-provider';
-import { Toaster } from 'react-hot-toast';
-import { Toaster as Sonner } from 'sonner';
+import { Toaster } from 'sonner';
 import ThemeSwitch from '../components/ThemeSwitch';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -47,24 +46,8 @@ export default function RootLayout({
               {children}
               <Footer />
               <ThemeSwitch />
-              <Toaster
-                toastOptions={{
-                  success: {
-                    style: {
-                      backgroundColor: 'green',
-                      color: 'white',
-                    },
-                  },
-                  error: {
-                    style: {
-                      backgroundColor: 'red',
-                      color: 'white',
-                    },
-                  },
-                }}
-                position="top-right"
-              />
-              <Sonner className="bg-primary" position="top-right" />
+
+              <Toaster className="bg-primary" position="bottom-right" />
             </ThemeContextProvider>
           </QueryContextProvider>
         </AuthContextProvider>
