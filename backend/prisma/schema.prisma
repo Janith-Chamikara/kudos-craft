@@ -1,104 +1,37 @@
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
-
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// model User {
-//   id                      String      @id @default(uuid())
-//   email                   String      @unique
-//   bio                     String?
-//   firstName               String
-//   lastName                String
-//   usage                   String      @default("personal")
-//   companyName             String?
-//   industryType            String?
-//   numberOfEmployees       String?
-//   job                     String?
-//   subscriptionPlan        String      @default("free")
-//   role                    String      @default("user")
-//   createdAt               DateTime    @default(now())
-//   updatedAt               DateTime    @updatedAt
-//   password                String
-//   isInitialSetupCompleted Boolean     @default(false)
-//   //relations
-//   workspaces              Workspace[]
-
-//   @@index([email])
-// }
-
-// model Workspace {
-//   id          String   @id @default(uuid())
-//   name        String
-//   description String?
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-
-//   //relations
-//   ownerId     String
-//   testimonial Testimonial[]
-//   owner       User          @relation(fields: [ownerId], references: [id])
-
-//   @@index([id])
-// }
-
-// model Testimonial {
-//   id         String   @id @default(uuid())
-//   name       String
-//   email      String
-//   ratings    Float
-//   review     String
-//   createdAt  DateTime @default(now())
-//   updatedAt  DateTime @updatedAt
-//   isAnalyzed Boolean  @default(false)
-//   sentiment  String?
-
-//   //relations
-//   workspaceId String
-//   workspace   Workspace @relation(fields: [workspaceId], references: [id])
-
-//   @@index([id])
-// }
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 model User {
-  id                      String   @id @default(uuid())
-  email                   String   @unique
+  id                      String         @id @default(uuid())
+  email                   String         @unique
   bio                     String?
   firstName               String
   lastName                String
-  usage                   String   @default("personal")
+  usage                   String         @default("personal")
   companyName             String?
   industryType            String?
   numberOfEmployees       String?
   job                     String?
-  subscriptionPlan        String   @default("free")
-  role                    String   @default("user")
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  subscriptionPlan        String         @default("free")
+  role                    String         @default("user")
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
   password                String
-  isInitialSetupCompleted Boolean  @default(false)
-
-  // Subscription fields
-  stripeCustomerId   String?   @unique
-  subscriptionStatus String? // active, trialing, canceled, etc.
-  subscriptionId     String?   @unique
-  currentPeriodEnd   DateTime?
-
-  // Relations
-  workspaces    Workspace[]
-  subscriptions Subscription[]
-  invoices      Invoice[]
+  isInitialSetupCompleted Boolean        @default(false)
+  currentPeriodEnd        DateTime?
+  stripeCustomerId        String?        @unique
+  subscriptionId          String?        @unique
+  subscriptionStatus      String?
+  invoices                Invoice[]
+  subscriptions           Subscription[]
+  workspaces              Workspace[]
 
   @@index([email])
 }
@@ -106,51 +39,45 @@ model User {
 model Subscription {
   id                   String    @id @default(uuid())
   stripeSubscriptionId String    @unique
-  status               String // active, canceled, etc.
+  status               String
   planId               String
   startDate            DateTime
   endDate              DateTime?
   cancelAtPeriodEnd    Boolean   @default(false)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
-
-  // Relations
-  userId   String
-  user     User      @relation(fields: [userId], references: [id])
-  invoices Invoice[]
+  userId               String
+  invoices             Invoice[]
+  user                 User      @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
 model Invoice {
-  id              String    @id @default(uuid())
-  stripeInvoiceId String    @unique
+  id              String        @id @default(uuid())
+  stripeInvoiceId String        @unique
   amount          Float
   currency        String
-  status          String // paid, unpaid, void
+  status          String
   invoiceDate     DateTime
   paidAt          DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  // Relations
-  userId         String
-  user           User          @relation(fields: [userId], references: [id])
-  subscriptionId String?
-  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  userId          String
+  subscriptionId  String?
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([subscriptionId])
 }
 
 model Workspace {
-  id          String   @id @default(uuid())
+  id          String        @id @default(uuid())
   name        String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   ownerId     String
   testimonial Testimonial[]
   owner       User          @relation(fields: [ownerId], references: [id])
@@ -159,17 +86,15 @@ model Workspace {
 }
 
 model Testimonial {
-  id         String   @id @default(uuid())
-  name       String
-  email      String
-  ratings    Float
-  review     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  isAnalyzed Boolean  @default(false)
-  sentiment  String?
-
-  // Relations
+  id          String    @id @default(uuid())
+  name        String
+  email       String
+  ratings     Float
+  review      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isAnalyzed  Boolean   @default(false)
+  sentiment   String?
   workspaceId String
   workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
