@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia;
 using KudosCraft.Views;
+using KudosCraft.Services;
+using KudosCraft.ResponseTypes;
 
 namespace KudosCraft.ViewModels
 {
@@ -51,33 +53,64 @@ namespace KudosCraft.ViewModels
                 HasError = false;
                 HasSuccess = false;
 
+                var requestBody = new
+                {
+                    email = Email,
+                    password = Password
+                };
+
                 var response = await _httpClient.PostAsync("/api/auth/sign-in", new StringContent(
-                    JsonSerializer.Serialize(new { email = Email, password = Password }),
+                    JsonSerializer.Serialize(requestBody),
                     Encoding.UTF8,
                     "application/json"));
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadAsStringAsync();
-                    SuccessMessage = "Login successful!";
-                    HasSuccess = true;
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<LoginResponse>(jsonResponse,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Console.Write(result);
 
-                    
-                    await Task.Delay(1000);
-
-                    
-                    if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                    if (result != null && result.User != null)
                     {
-                        var mainWindow = desktop.MainWindow;
-                        if (mainWindow != null)
+                        
+                        SessionService.Instance.SetSession(
+                            result.User.Id,
+                            result.User.Email,
+                            result.User.FirstName,
+                            result.User.LastName,
+                            result.User.Role,
+                            result.User.CompanyName,
+                            result.AccessToken,
+                            result.AccessTokenExpiresIn,
+                            result.RefreshToken,
+                            result.RefreshTokenExpiresIn
+                        );
+
+                        SuccessMessage = "Login successful!";
+                        HasSuccess = true;
+
+                        await Task.Delay(1000);
+                        
+
+                        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                         {
-                            var dashboardViewModel = new DashboardViewModel();
-                            var dashboardView = new DashboardView
+                            var mainWindow = desktop.MainWindow;
+                            if (mainWindow != null)
                             {
-                                DataContext = dashboardViewModel
-                            };
-                            mainWindow.Content = dashboardView;
+                                var dashboardViewModel = new DashboardViewModel();
+                                var dashboardView = new DashboardView
+                                {
+                                    DataContext = dashboardViewModel
+                                };
+                                mainWindow.Content = dashboardView;
+                            }
                         }
+                    }
+                    else
+                    {
+                        ErrorMessage = "Invalid response from server.";
+                        HasError = true;
                     }
                 }
                 else
@@ -93,4 +126,6 @@ namespace KudosCraft.ViewModels
             }
         }
     }
+
+   
 }
