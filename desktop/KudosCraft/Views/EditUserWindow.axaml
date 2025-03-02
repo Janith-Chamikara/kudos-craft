@@ -1,0 +1,151 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KudosCraft.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+        x:Class="KudosCraft.Views.EditUserWindow"
+        x:DataType="vm:EditUserViewModel"
+        Title="Edit User"
+        Width="500" Height="550"
+        WindowStartupLocation="CenterOwner"
+        Background="Black"
+        Foreground="White"
+        CanResize="False">
+
+	<Window.Resources>
+		<SolidColorBrush x:Key="ErrorBrush" Color="#FF0000"/>
+		<SolidColorBrush x:Key="NormalBrush" Color="White"/>
+	</Window.Resources>
+
+	<Grid RowDefinitions="Auto,*,Auto" Margin="20">
+		<!-- Header -->
+		<TextBlock Grid.Row="0"
+                   Text="Edit User"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20"
+                   Foreground="White"/>
+
+		<!-- Form -->
+		<StackPanel Grid.Row="1" Spacing="15">
+			<!-- First Name -->
+			<StackPanel>
+				<TextBlock Text="First Name"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+				<TextBox Text="{Binding FirstName}"
+                         Background="#111111"
+                         Foreground="White"
+                         BorderBrush="{Binding FirstNameError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                         BorderThickness="1"
+                         Padding="10,8"/>
+				<TextBlock Text="{Binding FirstNameError}"
+                           Foreground="#FF0000"
+                           FontSize="12"
+                           Margin="0,5,0,0"
+                           IsVisible="{Binding FirstNameError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+			</StackPanel>
+			
+			<!-- Last Name -->
+			<StackPanel>
+				<TextBlock Text="Last Name"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+				<TextBox Text="{Binding LastName}"
+                         Background="#111111"
+                         Foreground="White"
+                         BorderBrush="{Binding LastNameError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                         BorderThickness="1"
+                         Padding="10,8"/>
+				<TextBlock Text="{Binding LastNameError}"
+                           Foreground="#FF0000"
+                           FontSize="12"
+                           Margin="0,5,0,0"
+                           IsVisible="{Binding LastNameError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+			</StackPanel>
+
+			<!-- Email -->
+			<StackPanel>
+				<TextBlock Text="Email"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+				<TextBox Text="{Binding Email}"
+                         Background="#111111"
+                         Foreground="White"
+                         BorderBrush="{Binding EmailError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                         BorderThickness="1"
+                         Padding="10,8"/>
+				<TextBlock Text="{Binding EmailError}"
+                           Foreground="#FF0000"
+                           FontSize="12"
+                           Margin="0,5,0,0"
+                           IsVisible="{Binding EmailError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+			</StackPanel>
+
+			<!-- Role -->
+			<StackPanel>
+				<TextBlock Text="Role"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+				<ComboBox SelectedItem="{Binding Role}"
+                          Background="#111111"
+                          Foreground="White"
+                          BorderBrush="{Binding RoleError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                          BorderThickness="1"
+                          Padding="10,8"
+                          Width="200"
+                          HorizontalAlignment="Left">
+					<ComboBoxItem>User</ComboBoxItem>
+					<ComboBoxItem>Admin</ComboBoxItem>
+					
+				</ComboBox>
+				<TextBlock Text="{Binding RoleError}"
+                           Foreground="#FF0000"
+                           FontSize="12"
+                           Margin="0,5,0,0"
+                           IsVisible="{Binding RoleError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+			</StackPanel>
+
+			<!-- Subscription Plan -->
+			<StackPanel>
+				<TextBlock Text="Subscription Plan"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+				<ComboBox SelectedItem="{Binding SubscriptionPlan}"
+                          Background="#111111"
+                          Foreground="White"
+                          BorderBrush="White"
+                          BorderThickness="1"
+                          Padding="10,8"
+                          Width="200"
+                          HorizontalAlignment="Left">
+					<ComboBoxItem>Free</ComboBoxItem>
+					
+					<ComboBoxItem>Premium</ComboBoxItem>
+					
+				</ComboBox>
+			</StackPanel>
+		</StackPanel>
+
+		<!-- Buttons -->
+		<StackPanel Grid.Row="2"
+                   Orientation="Horizontal"
+                   HorizontalAlignment="Right"
+                   Spacing="10"
+                   Margin="0,20,0,0">
+			<Button Content="Cancel"
+                   Command="{Binding CancelCommand}"
+                   Background="Transparent"
+                   BorderBrush="White"
+                   BorderThickness="1"
+                   Foreground="White"
+                   Padding="15,8"/>
+			<Button Content="Save"
+                   Command="{Binding SaveCommand}"
+                   Background="White"
+                   Foreground="Black"
+                   Padding="15,8"/>
+		</StackPanel>
+	</Grid>
+</Window> 

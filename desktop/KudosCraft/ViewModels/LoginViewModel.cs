@@ -5,9 +5,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia;
-using KudosCraft.Views;
 using KudosCraft.Services;
 using KudosCraft.ResponseTypes;
 
@@ -16,6 +13,9 @@ namespace KudosCraft.ViewModels
     public partial class LoginViewModel : ViewModelBase
     {
         private readonly HttpClient _httpClient;
+
+        // Event that will be raised when login is successful
+        public event EventHandler? LoginSuccessful;
 
         [ObservableProperty]
         private string _email = "";
@@ -69,11 +69,10 @@ namespace KudosCraft.ViewModels
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<LoginResponse>(jsonResponse,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    Console.Write(result);
 
                     if (result != null && result.User != null)
                     {
-                        
+
                         SessionService.Instance.SetSession(
                             result.User.Id,
                             result.User.Email,
@@ -91,21 +90,9 @@ namespace KudosCraft.ViewModels
                         HasSuccess = true;
 
                         await Task.Delay(1000);
-                        
 
-                        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                        {
-                            var mainWindow = desktop.MainWindow;
-                            if (mainWindow != null)
-                            {
-                                var dashboardViewModel = new DashboardViewModel();
-                                var dashboardView = new DashboardView
-                                {
-                                    DataContext = dashboardViewModel
-                                };
-                                mainWindow.Content = dashboardView;
-                            }
-                        }
+                        // Raise the LoginSuccessful event
+                        LoginSuccessful?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
@@ -126,6 +113,4 @@ namespace KudosCraft.ViewModels
             }
         }
     }
-
-   
 }

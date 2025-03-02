@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="using:KudosCraft.Views"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        x:Class="KudosCraft.Views.MessageBoxWindow"
+        x:DataType="views:MessageBoxWindow"
+        Width="400" Height="200"
+        WindowStartupLocation="CenterOwner"
+        Background="Black"
+        Foreground="White"
+        CanResize="False">
+
+    <Grid RowDefinitions="*,Auto" Margin="20">
+        <!-- Message -->
+        <TextBlock Grid.Row="0" 
+                   Text="{Binding Message}" 
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Foreground="White"/>
+
+        <!-- Buttons -->
+        <Button Grid.Row="1" 
+                Content="OK" 
+                HorizontalAlignment="Center"
+                Background="White"
+                Foreground="Black"
+                Padding="30,8"
+                Margin="0,20,0,0"
+                Click="OkButton_Click"/>
+    </Grid>
+</Window> 
