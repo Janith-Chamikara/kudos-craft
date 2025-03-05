@@ -22,9 +22,53 @@ namespace KudosCraft.ViewModels
         [ObservableProperty]
         private string _email = string.Empty;
 
+        // For ComboBox binding
+        private object _roleItem;
+        public object RoleItem
+        {
+            get => _roleItem;
+            set
+            {
+                if (SetProperty(ref _roleItem, value))
+                {
+                    if (value is ComboBoxItem comboBoxItem)
+                    {
+                        Role = comboBoxItem.Content?.ToString() ?? string.Empty;
+                    }
+                    else if (value is string strValue)
+                    {
+                        Role = strValue;
+                    }
+                }
+            }
+        }
+
+        // Actual string value
         [ObservableProperty]
         private string _role = string.Empty;
 
+        // For ComboBox binding
+        private object _subscriptionPlanItem;
+        public object SubscriptionPlanItem
+        {
+            get => _subscriptionPlanItem;
+            set
+            {
+                if (SetProperty(ref _subscriptionPlanItem, value))
+                {
+                    if (value is ComboBoxItem comboBoxItem)
+                    {
+                        SubscriptionPlan = comboBoxItem.Content?.ToString() ?? string.Empty;
+                    }
+                    else if (value is string strValue)
+                    {
+                        SubscriptionPlan = strValue;
+                    }
+                }
+            }
+        }
+
+        // Actual string value
         [ObservableProperty]
         private string _subscriptionPlan = string.Empty;
 
@@ -56,8 +100,8 @@ namespace KudosCraft.ViewModels
             FirstName = string.Empty;
             LastName = string.Empty;
             Email = string.Empty;
-            Role = "User"; // Default role
-            SubscriptionPlan = "Free"; // Default subscription plan
+            Role = "user"; // Default role
+            SubscriptionPlan = "free"; // Default subscription plan
 
             // Initial validation
             ValidateFirstName();

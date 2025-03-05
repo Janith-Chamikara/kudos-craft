@@ -102,7 +102,7 @@ namespace KudosCraft.ViewModels
                     CurrentView = tag switch
                     {
                         "workspaces" => _serviceProvider.GetRequiredService<WorkspacesViewModel>(),
-                        //"testimonials" => _serviceProvider.GetRequiredService<TestimonialsViewModel>(),
+                        "testimonials" => _serviceProvider.GetRequiredService<TestimonialsViewModel>(),
                         "users" => _serviceProvider.GetRequiredService<UsersViewModel>(),
                         //"analytics" => _serviceProvider.GetRequiredService<AnalyticsViewModel>(),
                         //"subscriptions" => _serviceProvider.GetRequiredService<SubscriptionsViewModel>(),
@@ -117,7 +117,7 @@ namespace KudosCraft.ViewModels
                     CurrentView = tag switch
                     {
                         "workspaces" => new WorkspacesViewModel(_httpClient),
-                        //"testimonials" => new WorkspacesViewModel(_httpClient), // Replace with TestimonialsViewModel when available
+                        "testimonials" => new TestimonialsViewModel(_httpClient), // Replace with TestimonialsViewModel when available
                         "users" => new UsersViewModel(_httpClient),
                         //"analytics" => new AnalyticsViewModel(),
                         //"subscriptions" => new SubscriptionsViewModel(),

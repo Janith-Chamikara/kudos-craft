@@ -22,9 +22,53 @@ namespace KudosCraft.ViewModels
         [ObservableProperty]
         private string _email;
 
+        // For ComboBox binding
+        private object _roleItem;
+        public object RoleItem
+        {
+            get => _roleItem;
+            set
+            {
+                if (SetProperty(ref _roleItem, value))
+                {
+                    if (value is ComboBoxItem comboBoxItem)
+                    {
+                        Role = comboBoxItem.Content?.ToString() ?? string.Empty;
+                    }
+                    else if (value is string strValue)
+                    {
+                        Role = strValue;
+                    }
+                }
+            }
+        }
+
+        // Actual string value
         [ObservableProperty]
         private string _role;
 
+        // For ComboBox binding
+        private object _subscriptionPlanItem;
+        public object SubscriptionPlanItem
+        {
+            get => _subscriptionPlanItem;
+            set
+            {
+                if (SetProperty(ref _subscriptionPlanItem, value))
+                {
+                    if (value is ComboBoxItem comboBoxItem)
+                    {
+                        SubscriptionPlan = comboBoxItem.Content?.ToString() ?? string.Empty;
+                    }
+                    else if (value is string strValue)
+                    {
+                        SubscriptionPlan = strValue;
+                    }
+                }
+            }
+        }
+
+        // Actual string value
         [ObservableProperty]
         private string _subscriptionPlan;
 

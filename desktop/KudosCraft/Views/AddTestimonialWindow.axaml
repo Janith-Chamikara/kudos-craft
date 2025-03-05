@@ -1,0 +1,152 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:KudosCraft.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="650"
+        x:Class="KudosCraft.Views.AddTestimonialWindow"
+        x:DataType="vm:AddTestimonialViewModel"
+        Title="Add New Testimonial"
+        Width="500" Height="650"
+        WindowStartupLocation="CenterOwner"
+        Background="Black"
+        Foreground="White"
+        CanResize="False">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ErrorBrush" Color="#FF0000"/>
+        <SolidColorBrush x:Key="NormalBrush" Color="White"/>
+    </Window.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+        <!-- Header -->
+        <TextBlock Grid.Row="0"
+                   Text="Add New Testimonial"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20"
+                   Foreground="White"/>
+
+        <!-- Form -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="15">
+                <!-- Workspace ID -->
+                <StackPanel>
+                    <TextBlock Text="Workspace ID"
+                             Foreground="White"
+                             Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding WorkspaceId}"
+                            Background="#111111"
+                            Foreground="White"
+                            BorderBrush="{Binding WorkspaceIdError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                            BorderThickness="1"
+                            Padding="10,8"/>
+                    <TextBlock Text="{Binding WorkspaceIdError}"
+                             Foreground="#FF0000"
+                             FontSize="12"
+                             Margin="0,5,0,0"
+                             IsVisible="{Binding WorkspaceIdError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                </StackPanel>
+
+                <!-- Name -->
+                <StackPanel>
+                    <TextBlock Text="Name"
+                             Foreground="White"
+                             Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding Name}"
+                            Background="#111111"
+                            Foreground="White"
+                            BorderBrush="{Binding NameError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                            BorderThickness="1"
+                            Padding="10,8"/>
+                    <TextBlock Text="{Binding NameError}"
+                             Foreground="#FF0000"
+                             FontSize="12"
+                             Margin="0,5,0,0"
+                             IsVisible="{Binding NameError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                </StackPanel>
+
+                <!-- Email -->
+                <StackPanel>
+                    <TextBlock Text="Email"
+                             Foreground="White"
+                             Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding Email}"
+                            Background="#111111"
+                            Foreground="White"
+                            BorderBrush="{Binding EmailError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                            BorderThickness="1"
+                            Padding="10,8"/>
+                    <TextBlock Text="{Binding EmailError}"
+                             Foreground="#FF0000"
+                             FontSize="12"
+                             Margin="0,5,0,0"
+                             IsVisible="{Binding EmailError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                </StackPanel>
+
+                <!-- Review -->
+                <StackPanel>
+                    <TextBlock Text="Review"
+                             Foreground="White"
+                             Margin="0,0,0,5"/>
+                    <TextBox Text="{Binding Review}"
+                            Background="#111111"
+                            Foreground="White"
+                            BorderBrush="{Binding ContentError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                            BorderThickness="1"
+                            Height="100"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            Padding="10,8"/>
+                    <TextBlock Text="{Binding ContentError}"
+                             Foreground="#FF0000"
+                             FontSize="12"
+                             Margin="0,5,0,0"
+                             IsVisible="{Binding ContentError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                </StackPanel>
+
+                <!-- Rating -->
+                <StackPanel>
+                    <TextBlock Text="Rating"
+                             Foreground="White"
+                             Margin="0,0,0,5"/>
+                    <NumericUpDown Value="{Binding Rating}"
+                                 Minimum="1"
+                                 Maximum="5"
+                                 Increment="1"
+                                 Width="200"
+                                 HorizontalAlignment="Left"
+                                 Background="#111111"
+                                 Foreground="White"
+                                 BorderBrush="{Binding RatingError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
+                                 BorderThickness="1"/>
+                    <TextBlock Text="{Binding RatingError}"
+                             Foreground="#FF0000"
+                             FontSize="12"
+                             Margin="0,5,0,0"
+                             IsVisible="{Binding RatingError, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                   Orientation="Horizontal"
+                   HorizontalAlignment="Right"
+                   Spacing="10"
+                   Margin="0,20,0,0">
+            <Button Content="Cancel"
+                   Command="{Binding CancelCommand}"
+                   Background="Transparent"
+                   BorderBrush="White"
+                   BorderThickness="1"
+                   Foreground="White"
+                   Padding="15,8"/>
+            <Button Content="Create"
+                   Command="{Binding SaveCommand}"
+                   Background="White"
+                   Foreground="Black"
+                   Padding="15,8"/>
+        </StackPanel>
+    </Grid>
+</Window> 

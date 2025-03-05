@@ -33,7 +33,7 @@ namespace KudosCraft
             services.AddTransient<LoginViewModel>();
             services.AddTransient<DashboardViewModel>(sp => new DashboardViewModel(sp));
             services.AddTransient<WorkspacesViewModel>();
-            //services.AddTransient<TestimonialsViewModel>();
+            services.AddTransient<TestimonialsViewModel>();
             services.AddTransient<UsersViewModel>();
             //services.AddTransient<AnalyticsViewModel>();
             //services.AddTransient<SubscriptionsViewModel>();

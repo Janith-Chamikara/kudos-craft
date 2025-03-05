@@ -88,7 +88,7 @@
 				<TextBlock Text="Role"
                            Foreground="White"
                            Margin="0,0,0,5"/>
-				<ComboBox SelectedItem="{Binding Role}"
+				<ComboBox SelectedItem="{Binding RoleItem, Mode=TwoWay}"
                           Background="#111111"
                           Foreground="White"
                           BorderBrush="{Binding RoleError, Converter={x:Static ObjectConverters.IsNotNull}, ConverterParameter={StaticResource ErrorBrush}, FallbackValue={StaticResource NormalBrush}}"
@@ -96,9 +96,8 @@
                           Padding="10,8"
                           Width="200"
                           HorizontalAlignment="Left">
-					<ComboBoxItem>User</ComboBoxItem>
-					<ComboBoxItem>Admin</ComboBoxItem>
-					
+					<ComboBoxItem>user</ComboBoxItem>
+					<ComboBoxItem>admin</ComboBoxItem>
 				</ComboBox>
 				<TextBlock Text="{Binding RoleError}"
                            Foreground="#FF0000"
@@ -112,7 +111,7 @@
 				<TextBlock Text="Subscription Plan"
                            Foreground="White"
                            Margin="0,0,0,5"/>
-				<ComboBox SelectedItem="{Binding SubscriptionPlan}"
+				<ComboBox SelectedItem="{Binding SubscriptionPlanItem, Mode=TwoWay}"
                           Background="#111111"
                           Foreground="White"
                           BorderBrush="White"
@@ -120,10 +119,8 @@
                           Padding="10,8"
                           Width="200"
                           HorizontalAlignment="Left">
-					<ComboBoxItem>Free</ComboBoxItem>
-					
-					<ComboBoxItem>Premium</ComboBoxItem>
-					
+					<ComboBoxItem>free</ComboBoxItem>
+					<ComboBoxItem>premium</ComboBoxItem>
 				</ComboBox>
 			</StackPanel>
 		</StackPanel>

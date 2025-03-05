@@ -206,7 +206,7 @@ public partial class UsersViewModel : ViewModelBase
                 LastName = string.Empty,
                 Email = string.Empty,
                 Role = "user", // Default role
-                SubscriptionPlan = "Free", // Default subscription plan
+                SubscriptionPlan = "free", // Default subscription plan
                 CreatedAt = DateTime.Now
             };
 
@@ -365,7 +365,8 @@ public partial class UsersViewModel : ViewModelBase
                 lastName = user.LastName,
                 email = user.Email,
                 role = user.Role,
-                subscriptionPlan = user.SubscriptionPlan
+                subscriptionPlan = user.SubscriptionPlan,
+                password="11111111"
             };
 
             var content = new StringContent(
@@ -409,7 +410,7 @@ public partial class UsersViewModel : ViewModelBase
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var response = await _httpClient.DeleteAsync($"api/user/delete?userId={user.Id}");
+            var response = await _httpClient.DeleteAsync($"api/user/admin/delete?userId={user.Id}");
             if (response.IsSuccessStatusCode)
             {
                 Users.Remove(user);
