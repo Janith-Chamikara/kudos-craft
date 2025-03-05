@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:KudosCraft.ViewModels"
+             xmlns:controls="using:Avalonia.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="KudosCraft.Views.UsersView"
+             x:DataType="vm:UsersViewModel">
+
+    <Grid RowDefinitions="Auto,*" Margin="32">
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Title -->
+            <TextBlock Text="Users Management"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       Grid.Column="0"/>
+
+            <!-- Push Button to Right -->
+            <Button Content="Add New User"
+                    Command="{Binding AddNewCommand}"
+                    Background="White"
+                    Foreground="Black"
+                    Padding="8,4"
+                    HorizontalAlignment="Right"
+                    Grid.Column="2"/>
+        </Grid>
+
+        <!-- Table -->
+        <Border Grid.Row="1"
+                BorderBrush="White"
+                BorderThickness="1"
+                CornerRadius="8">
+            <Grid RowDefinitions="Auto,*">
+                <!-- Loading Indicator -->
+                <ProgressBar Grid.Row="0"
+                            IsVisible="{Binding IsLoading}"
+                            IsIndeterminate="True"
+                            Height="2"
+                            Background="Transparent"
+                            Foreground="White"/>
+                
+
+                <controls:DataGrid Grid.Row="1"
+                         ItemsSource="{Binding Users}"
+                         AutoGenerateColumns="False"
+                         IsReadOnly="True"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Foreground="White">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Header="First Name"
+                                          Binding="{Binding FirstName}"
+                                          Width="*"/>
+                        <controls:DataGridTextColumn Header="Last Name"
+                                          Binding="{Binding LastName}"
+                                          Width="*"/>
+                        <controls:DataGridTextColumn Header="Email"
+                                          Binding="{Binding Email}"
+                                          Width="*"/>
+                        <controls:DataGridTextColumn Header="Role"
+                                          Binding="{Binding Role}"
+                                          Width="*"/>
+                        <controls:DataGridTextColumn Header="Subscription"
+                                          Binding="{Binding SubscriptionPlan}"
+                                          Width="*"/>
+                        <controls:DataGridTextColumn Header="Created"
+                                          Binding="{Binding CreatedAt, StringFormat={}{0:d}}"
+                                          Width="*"/>
+                        
+                        <controls:DataGridTemplateColumn Header="Actions" Width="120">
+                            <controls:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Classes="action-button"
+                                                Command="{Binding $parent[UserControl].((vm:UsersViewModel)DataContext).EditCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Edit"/>
+                                        <Button Classes="action-button"
+                                                Command="{Binding $parent[UserControl].((vm:UsersViewModel)DataContext).DeleteCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="Delete"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </controls:DataGridTemplateColumn.CellTemplate>
+                        </controls:DataGridTemplateColumn>
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+
+    <UserControl.Styles>
+        <Style Selector="controls|DataGrid">
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#30FFFFFF"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#30FFFFFF"/>
+        </Style>
+
+        <Style Selector="Button.action-button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        <Style Selector="Button.action-button:pointerover">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style Selector="controls|DataGridColumnHeader">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+    </UserControl.Styles>
+</UserControl> 

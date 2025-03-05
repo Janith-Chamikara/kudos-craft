@@ -56,6 +56,10 @@ export class WorkspaceController {
   async getWorkspaceStatsHandler(@Query('userId') userId: string) {
     return this.workspaceService.getWorkspaceStats(userId);
   }
+  @Get('/admin/get-stats')
+  async getAllWorkspaceStatsHandler() {
+    return this.workspaceService.getAllWorkspaceStats();
+  }
 
   @Put('update')
   async updateWorkspaceById(

@@ -3,30 +3,42 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using KudosCraft.ViewModels;
 
-namespace KudosCraft
+namespace KudosCraft;
+
+public class ViewLocator : IDataTemplate
 {
-    public class ViewLocator : IDataTemplate
+    public Control? Build(object? data)
     {
+        if (data is null)
+            return null;
 
-        public Control? Build(object? param)
+        var name = data.GetType().FullName!.Replace("ViewModel", "View");
+        var type = Type.GetType(name);
+
+        if (type == null)
         {
-            if (param is null)
-                return null;
+            // Try to find the type in the KudosCraft.Views namespace
+            name = name.Replace("KudosCraft.ViewModels", "KudosCraft.Views");
+            type = Type.GetType(name);
 
-            var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-            var type = Type.GetType(name);
-
-            if (type != null)
+            // If still not found, try to load the assembly and find the type
+            if (type == null)
             {
-                return (Control)Activator.CreateInstance(type)!;
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                type = assembly.GetType(name);
             }
-
-            return new TextBlock { Text = "Not Found: " + name };
         }
 
-        public bool Match(object? data)
+        if (type != null)
         {
-            return data is ViewModelBase;
+            return (Control)Activator.CreateInstance(type)!;
         }
+
+        return new TextBlock { Text = "Not Found: " + name };
+    }
+
+    public bool Match(object? data)
+    {
+        return data is ViewModelBase;
     }
 }

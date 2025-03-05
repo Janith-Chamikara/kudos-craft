@@ -6,14 +6,40 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using KudosCraft.ViewModels;
 using KudosCraft.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
 
 namespace KudosCraft
 {
     public partial class App : Application
     {
+        public IServiceProvider? Services { get; private set; }
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            var services = new ServiceCollection();
+
+            // Register HttpClient
+            services.AddSingleton<HttpClient>(sp => new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:3001")
+            });
+
+            // Register ViewModels
+            services.AddTransient<MainWindowViewModel>();
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<DashboardViewModel>(sp => new DashboardViewModel(sp));
+            services.AddTransient<WorkspacesViewModel>();
+            services.AddTransient<TestimonialsViewModel>();
+            services.AddTransient<UsersViewModel>();
+            //services.AddTransient<AnalyticsViewModel>();
+            //services.AddTransient<SubscriptionsViewModel>();
+            //services.AddTransient<PaymentsViewModel>();
+
+            Services = services.BuildServiceProvider();
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -25,7 +51,7 @@ namespace KudosCraft
                 DisableAvaloniaDataAnnotationValidation();
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = Services?.GetRequiredService<MainWindowViewModel>(),
                 };
             }
 
@@ -44,7 +70,5 @@ namespace KudosCraft
                 BindingPlugins.DataValidators.Remove(plugin);
             }
         }
-
-
     }
 }

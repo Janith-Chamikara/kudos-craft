@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { TestimonialService } from './testimonial.service';
 import { TestimonialDto } from './dto/testimonial.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
@@ -37,6 +45,23 @@ export class TestimonialController {
   @Get('analyze')
   async analyzeTestimonialHandler(@Query('userId') userId: string) {
     return this.testimonialService.analyzeTestimonials(userId);
+  }
+
+  @Put('update')
+  async updateTestimonialHandler(
+    @Query('testimonialId') testimonialId: string,
+    @Body() updatedTestimonialContent: Partial<TestimonialDto>,
+  ) {
+    return this.testimonialService.updateTestimonial(
+      testimonialId,
+      updatedTestimonialContent,
+    );
+  }
+  @Delete('delete')
+  async deleteTestimonialHandler(
+    @Query('testimonialId') testimonialId: string,
+  ) {
+    return this.testimonialService.deleteTestimonial(testimonialId);
   }
   @Post('/workspace/get-all')
   async getTestimonialsByWorkspaceIdHandler(

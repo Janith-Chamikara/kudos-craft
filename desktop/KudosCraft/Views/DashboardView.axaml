@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:KudosCraft.ViewModels"
@@ -23,6 +24,8 @@
                     <ListBoxItem Content="Testimonials" Tag="testimonials"/>
                     <ListBoxItem Content="Users" Tag="users"/>
                     <ListBoxItem Content="Analytics" Tag="analytics"/>
+                    <ListBoxItem Content="Subscriptions" Tag="subscriptions"/>
+                    <ListBoxItem Content="Payments" Tag="payments"/>
 
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
@@ -45,81 +48,99 @@
         </Border>
 
         <!-- Main Content -->
-        <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="32" Background="Black">
-            <!-- Stats Cards -->
-			<ProgressBar IsVisible="{Binding IsLoading}"
-							IsIndeterminate="True"
-							Width="200"
-							Height="4"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Background="Transparent"
-							Foreground="{DynamicResource SystemAccentColor}" />
-			<Grid IsVisible="{Binding !IsLoading}" Grid.Row="0" ColumnDefinitions="*,*,*,*" Margin="0,0,0,32">
-                <Border Grid.Column="0" Margin="8"
-                        Background="Black"
-                        BorderBrush="White"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="Total Workspaces" Foreground="White"/>
-                        <TextBlock Text="{Binding TotalWorkspaces}" 
-                                 FontSize="24" 
-                                 FontWeight="Bold"
-                                 Foreground="White"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="1" Margin="8"
-                        Background="Black"
-                        BorderBrush="White"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="Total Testimonials" Foreground="White"/>
-                        <TextBlock Text="{Binding TotalTestimonials}" 
-                                 FontSize="24" 
-                                 FontWeight="Bold"
-                                 Foreground="White"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="2" Margin="8"
-                        Background="Black"
-                        BorderBrush="White"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="Average Rating" Foreground="White"/>
-                        <TextBlock Text="{Binding AverageRating}" 
-                                 FontSize="24" 
-                                 FontWeight="Bold"
-                                 Foreground="White"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="3" Margin="8"
-                        Background="Black"
-                        BorderBrush="White"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="This Month" Foreground="White"/>
-                        <TextBlock Text="{Binding MonthlyGrowth}" 
-                                 FontSize="24" 
-                                 FontWeight="Bold"
-                                 Foreground="White"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <!-- Content Area -->
-            <ContentControl Grid.Row="1" 
-                          Content="{Binding CurrentView}"/>
+        <Grid Grid.Column="1" Margin="20">
+            <!-- Dashboard Summary (shown when no specific view is selected) -->
+            <StackPanel IsVisible="{Binding CurrentView, Converter={x:Static ObjectConverters.IsNull}}">
+                <TextBlock Text="Dashboard" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="White" 
+                           Margin="0,0,0,20"/>
+                
+                <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto" Margin="0,0,0,20">
+                    <!-- Workspaces Card -->
+                    <Border Grid.Column="0" Margin="0,0,10,0"
+                            Background="#111111" 
+                            BorderBrush="White" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Workspaces" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{Binding TotalWorkspaces}" 
+                                       Foreground="White" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Testimonials Card -->
+                    <Border Grid.Column="1" Margin="10,0,10,0"
+                            Background="#111111" 
+                            BorderBrush="White" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Testimonials" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{Binding TotalTestimonials}" 
+                                       Foreground="White" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Average Rating Card -->
+                    <Border Grid.Column="2" Margin="10,0,10,0"
+                            Background="#111111" 
+                            BorderBrush="White" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Avg. Rating" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{Binding AverageRating, StringFormat={}{0:F1}}" 
+                                       Foreground="White" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Growth Card -->
+                    <Border Grid.Column="3" Margin="10,0,0,0"
+                            Background="#111111" 
+                            BorderBrush="White" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Monthly Growth" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{Binding MonthlyGrowth}" 
+                                       Foreground="White" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                
+                <!-- Additional dashboard content can be added here -->
+            </StackPanel>
+            
+            <!-- Content from selected menu item -->
+            <ContentControl Content="{Binding CurrentView}" 
+                           IsVisible="{Binding CurrentView, Converter={x:Static ObjectConverters.IsNotNull}}"/>
         </Grid>
     </Grid>
 </UserControl> 

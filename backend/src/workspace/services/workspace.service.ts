@@ -131,4 +131,9 @@ export class WorkspaceService {
     });
     return { count };
   }
+
+  async getAllWorkspaceStats() {
+    const count = await this.prismaService.workspace.count();
+    return { count };
+  }
 }

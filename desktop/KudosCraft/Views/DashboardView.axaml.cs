@@ -1,12 +1,17 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace KudosCraft.Views
+namespace KudosCraft.Views;
+
+public partial class DashboardView : UserControl
 {
-    public partial class DashboardView : UserControl
+    public DashboardView()
     {
-        public DashboardView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
+
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }
