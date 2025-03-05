@@ -127,7 +127,7 @@ export class TestimonialService {
     return isTestimonialExists;
   }
 
-  async updateTestimonial(id: string, testimonialDto: TestimonialDto) {
+  async updateTestimonial(id: string, testimonialDto: Partial<TestimonialDto>) {
     const isTestimonialExists = await this.prismaService.testimonial.findUnique(
       {
         where: {

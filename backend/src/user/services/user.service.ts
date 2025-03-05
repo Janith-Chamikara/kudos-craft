@@ -86,6 +86,29 @@ export class UserService {
     if (!userId) {
       throw new NotFoundException('Cannot find user Id');
     }
+
+    const workspaces = await this.prismaService.workspace.findMany({
+      where: {
+        ownerId: userId,
+      },
+    });
+
+    if (workspaces.length > 0) {
+      await this.prismaService.testimonial.deleteMany({
+        where: {
+          workspaceId: {
+            in: workspaces.map((workspace) => workspace.id),
+          },
+        },
+      });
+    }
+
+    await this.prismaService.workspace.deleteMany({
+      where: {
+        ownerId: userId,
+      },
+    });
+
     return await this.prismaService.user.delete({
       where: {
         id: userId,

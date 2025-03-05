@@ -11,7 +11,7 @@ export class AiIntegrationService {
     this.genAI = new GoogleGenerativeAI(
       this.configService.getOrThrow('GEMINI_API_KEY'),
     );
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   }
 
   async classifyTestimonial(
@@ -25,6 +25,7 @@ Testimonial: ${testimonial}
 Ratings: ${ratings}`;
 
       const result = await this.model.generateContent(prompt);
+      console.log(result);
       const response = await result.response;
       const text = response.text();
       console.log(text);
