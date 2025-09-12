@@ -1,12 +1,16 @@
+#Common dependencies
+FROM node:22-alpine as deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
 #Development stage
 
-FROM node:22-slim as development
+FROM node:22-alpine as development
 
 WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
+COPY --from=deps ./app/node_modules ./node_modules
 
 COPY . .
 
@@ -20,9 +24,7 @@ FROM node:22-slim as builder
 
 WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
+COPY --from=deps ./app/node_modules ./node_modules
 
 COPY . .
 
@@ -34,8 +36,8 @@ FROM node:22-slim as production
 
 WORKDIR /app
 
-COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.next/standalone ./
 
 EXPOSE 3000
 
