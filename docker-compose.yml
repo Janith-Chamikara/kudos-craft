@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development 
+    ports:
+      - "5173:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
+      
+  backend: 
+    build: 
+      context: backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    volumes: 
+    - ./backend:/usr/src/app
+    - /usr/src/app/node_modules
+    depends_on:
+    - db
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+  
+  db:
+    image: postgres:17.6
+    ports:
+    - "5432:5432"
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_DB=mydb
+  
+  prisma-studio:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5556:5555"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
+      - NODE_ENV=development
+    depends_on:
+      - db
+    command: npx prisma studio
+
+volumes:
+ postgres_data:
