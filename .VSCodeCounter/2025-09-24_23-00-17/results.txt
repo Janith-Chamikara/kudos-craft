@@ -1,0 +1,45 @@
+Date : 2025-09-24 23:00:17
+Directory : c:\Users\janit\Documents\kudos-craft\backend\src\auth
+Total : 13 files,  364 codes, 1 comments, 53 blanks, all 418 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |         13 |        364 |          1 |         53 |        418 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                        | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                           |         13 |        364 |          1 |         53 |        418 |
+| . (Files)                                                                                   |          1 |         34 |          0 |          2 |         36 |
+| controllers                                                                                 |          2 |         51 |          0 |         10 |         61 |
+| decorators                                                                                  |          2 |          9 |          0 |          4 |         13 |
+| dto                                                                                         |          2 |         34 |          0 |          8 |         42 |
+| guards                                                                                      |          2 |         44 |          0 |          6 |         50 |
+| services                                                                                    |          4 |        192 |          1 |         23 |        216 |
+| services (Files)                                                                            |          2 |        152 |          1 |         17 |        170 |
+| services\strategies                                                                         |          2 |         40 |          0 |          6 |         46 |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                    | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\auth.module.ts                        | TypeScript |         34 |          0 |          2 |         36 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\controllers\auth.controller.spec.ts   | TypeScript |         14 |          0 |          5 |         19 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\controllers\auth.controller.ts        | TypeScript |         37 |          0 |          5 |         42 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\decorators\public.decorator.ts        | TypeScript |          2 |          0 |          2 |          4 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\decorators\user.decorator.ts          | TypeScript |          7 |          0 |          2 |          9 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\dto\sign-in.dto.ts                    | TypeScript |         11 |          0 |          3 |         14 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\dto\sign-up.dto.ts                    | TypeScript |         23 |          0 |          5 |         28 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\guards\jwt.guard.ts                   | TypeScript |         20 |          0 |          2 |         22 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\guards\local.auth.guard.ts            | TypeScript |         24 |          0 |          4 |         28 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\services\auth.service.spec.ts         | TypeScript |         14 |          0 |          5 |         19 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\services\auth.service.ts              | TypeScript |        138 |          1 |         12 |        151 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\services\strategies\jwt.strategy.ts   | TypeScript |         17 |          0 |          3 |         20 |
+| c:\Users\janit\Documents\kudos-craft\backend\src\auth\services\strategies\local.strategy.ts | TypeScript |         23 |          0 |          3 |         26 |
+| Total                                                                                       |            |        364 |          1 |         53 |        418 |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
