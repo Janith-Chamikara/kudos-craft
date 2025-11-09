@@ -2,41 +2,38 @@ pipeline {
     agent any
 
     stages {
-        parallel {
-            // --- Backend Job ---
-            stage('Backend Build') {
-                tools {
-                    nodejs 'NodeJS-22'
-                }
-                steps {
-                    echo 'Getting code...'
-                    checkout scm
+        stage('Checkout') {
+            steps {
+                echo 'Getting code...'
+                checkout scm
+            }
+        }
 
-                    dir('backend') {
-                        echo 'Installing backend dependencies...'
-                        sh 'npm install'
-                        
-                        echo 'Building backend...'
-                        sh 'npm run build'
+        stage('Parallel Builds') {
+            parallel {
+                // --- Job 1: Backend ---
+                stage('Backend Build') {
+                    steps {
+                        dir('backend') {
+                            echo 'Installing backend dependencies...'
+                            sh 'npm install'
+                            
+                            echo 'Building backend...'
+                            sh 'npm run build'
+                        }
                     }
                 }
-            }
 
-            // --- Frontend Job ---
-            stage('Frontend Build') {
-                tools {
-                    nodejs 'NodeJS-22'
-                }
-                steps {
-                    echo 'Getting code...'
-                    checkout scm
-
-                    dir('frontend') {
-                        echo 'Installing frontend dependencies...'
-                        sh 'npm install --legacy-peer-deps'
-                        
-                        echo 'Building frontend...'
-                        sh 'npm run build'
+                // --- Job 2: Frontend ---
+                stage('Frontend Build') {
+                    steps {
+                        dir('frontend') {
+                            echo 'Installing frontend dependencies...'
+                            sh 'npm install --legacy-peer-deps'
+                            
+                            echo 'Building frontend...'
+                            sh 'npm run build'
+                        }
                     }
                 }
             }
