@@ -43,7 +43,7 @@ pipeline {
                     steps {
                         dir('frontend') {
                             echo 'Installing frontend dependencies...'
-                            sh 'npm install --legacy-peer-deps --network-timeout=100000000'
+                            sh 'npm install --legacy-peer-deps --timeout=600000 --fetch-timeout=600000'
                             
                             echo 'Building frontend...'
                             sh 'npm run build'
