@@ -17,7 +17,7 @@ pipeline {
                         DATABASE_URL = 'file:./dev.db'
                         NODE_ENV = 'development'
                     }
-                    
+
                     steps {
                         dir('backend') {
                             echo 'Installing backend dependencies'
@@ -28,6 +28,9 @@ pipeline {
 
                             echo 'Generate prisam client'
                             sh 'npx prisma generate'
+
+                            echo 'Seed the database'
+                            sh 'npm run seed'
                             
                             echo 'Building backend...'
                             sh 'npm run build'
@@ -35,18 +38,18 @@ pipeline {
                     }
                 }
 
-                // // --- Job 2: Frontend ---
-                // stage('Frontend Build') {
-                //     steps {
-                //         dir('frontend') {
-                //             echo 'Installing frontend dependencies...'
-                //             sh 'npm install --legacy-peer-deps'
+                // --- Job 2: Frontend ---
+                stage('Frontend Build') {
+                    steps {
+                        dir('frontend') {
+                            echo 'Installing frontend dependencies...'
+                            sh 'npm install --legacy-peer-deps --network-timeout=1000000'
                             
-                //             echo 'Building frontend...'
-                //             sh 'npm run build'
-                //         }
-                //     }
-                // }
+                            echo 'Building frontend...'
+                            sh 'npm run build'
+                        }
+                    }
+                }
             }
         }
     }
