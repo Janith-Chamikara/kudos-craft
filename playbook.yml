@@ -1,0 +1,23 @@
+---
+- name: Check server uptime
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+   - name: Echo Devops
+     ansible.builtin.shell: echo "Devops session Nov 7"
+     register: echo_result
+
+   - name: Display the echo text
+     ansible.builtin.debug:
+     msg: "Uptime: {{ echo_result.stdout }}"
+
+  
+  tasks:
+    - name: Run the uptime command
+      ansible.builtin.command: uptime
+      register: uptime_result
+
+    - name: Display the uptime
+      ansible.builtin.debug:
+        msg: "Uptime: {{ uptime_result.stdout }}"
