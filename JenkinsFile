@@ -2,9 +2,43 @@ pipeline {
     agent any
 
     stages {
-        stage('Print Hello World'){
-            steps {
-                echo "Hello, World!"
+        parallel {
+            // --- Backend Job ---
+            stage('Backend Build') {
+                tools {
+                    nodejs 'NodeJS-22'
+                }
+                steps {
+                    echo 'Getting code...'
+                    checkout scm
+
+                    dir('backend') {
+                        echo 'Installing backend dependencies...'
+                        sh 'npm install'
+                        
+                        echo 'Building backend...'
+                        sh 'npm run build'
+                    }
+                }
+            }
+
+            // --- Frontend Job ---
+            stage('Frontend Build') {
+                tools {
+                    nodejs 'NodeJS-22'
+                }
+                steps {
+                    echo 'Getting code...'
+                    checkout scm
+
+                    dir('frontend') {
+                        echo 'Installing frontend dependencies...'
+                        sh 'npm install --legacy-peer-deps'
+                        
+                        echo 'Building frontend...'
+                        sh 'npm run build'
+                    }
+                }
             }
         }
     }
