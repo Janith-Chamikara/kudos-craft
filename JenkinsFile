@@ -12,31 +12,31 @@ pipeline {
         stage('Parallel Builds') {
             parallel {
                 // --- Job 1: Backend ---
-                stage('Backend Build') {
-                    environment {
-                        DATABASE_URL = 'file:./dev.db'
-                        NODE_ENV = 'development'
-                    }
+                // stage('Backend Build') {
+                //     environment {
+                //         DATABASE_URL = 'file:./dev.db'
+                //         NODE_ENV = 'development'
+                //     }
 
-                    steps {
-                        dir('backend') {
-                            echo 'Installing backend dependencies'
-                            sh 'npm install --network-timeout=1000000'
+                //     steps {
+                //         dir('backend') {
+                //             echo 'Installing backend dependencies'
+                //             sh 'npm install --network-timeout=1000000'
 
-                            echo 'Running Prisma migrations'
-                            sh 'npx prisma migrate deploy'
+                //             echo 'Running Prisma migrations'
+                //             sh 'npx prisma migrate deploy'
 
-                            echo 'Generate prisam client'
-                            sh 'npx prisma generate'
+                //             echo 'Generate prisam client'
+                //             sh 'npx prisma generate'
 
-                            echo 'Seed the database'
-                            sh 'npm run seed'
+                //             echo 'Seed the database'
+                //             sh 'npm run seed'
                             
-                            echo 'Building backend...'
-                            sh 'npm run build'
-                        }
-                    }
-                }
+                //             echo 'Building backend...'
+                //             sh 'npm run build'
+                //         }
+                //     }
+                // }
 
                 // --- Job 2: Frontend ---
                 stage('Frontend Build') {
