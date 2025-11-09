@@ -13,6 +13,11 @@ pipeline {
             parallel {
                 // --- Job 1: Backend ---
                 stage('Backend Build') {
+                    environment {
+                        DATABASE_URL = 'file:./dev.db'
+                        NODE_ENV = 'development'
+                    }
+                    
                     steps {
                         dir('backend') {
                             echo 'Installing backend dependencies'
