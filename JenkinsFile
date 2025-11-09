@@ -15,11 +15,11 @@ pipeline {
                 stage('Backend Build') {
                     steps {
                         dir('backend') {
-                            echo 'Installing backend dependencies...'
-                            sh 'npm install --network-timeout 1000000'
+                            echo 'Installing backend dependencies'
+                            sh 'npm install --network-timeout=1000000'
 
-                            echo 'Reset prisma database'
-                            sh 'npx prisma migrate dev --name "init"'
+                            echo 'Running Prisma migrations'
+                            sh 'npx prisma migrate deploy'
 
                             echo 'Generate prisam client'
                             sh 'npx prisma generate'
