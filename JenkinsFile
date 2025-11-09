@@ -24,18 +24,18 @@ pipeline {
                     }
                 }
 
-                // --- Job 2: Frontend ---
-                stage('Frontend Build') {
-                    steps {
-                        dir('frontend') {
-                            echo 'Installing frontend dependencies...'
-                            sh 'npm install --legacy-peer-deps'
+                // // --- Job 2: Frontend ---
+                // stage('Frontend Build') {
+                //     steps {
+                //         dir('frontend') {
+                //             echo 'Installing frontend dependencies...'
+                //             sh 'npm install --legacy-peer-deps'
                             
-                            echo 'Building frontend...'
-                            sh 'npm run build'
-                        }
-                    }
-                }
+                //             echo 'Building frontend...'
+                //             sh 'npm run build'
+                //         }
+                //     }
+                // }
             }
         }
     }
