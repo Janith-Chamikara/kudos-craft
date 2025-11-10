@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "vm_janith" {
-  ami           = "ami-000bc3d0f4b2707c9"  
+  ami           = "ami-07fb0a5bf9ae299a4"  
   instance_type = "t3.micro"                
 
   tags = {
