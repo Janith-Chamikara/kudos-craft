@@ -4,18 +4,18 @@
   gather_facts: false
 
   tasks:
-   - name: Checking status
-     ansible.builtin.shell: echo "Ansible playbook is running..."
-     register: echo_result
+    - name: Checking status
+      ansible.builtin.shell: echo "Ansible playbook is running..."
+      register: echo_result
 
-   - name: Display the echo text
-     ansible.builtin.debug:
-     msg: "OUTPUT: {{ echo_result.stdout }}"
+    - name: Display the echo text
+      ansible.builtin.debug:
+        msg: "OUTPUT: {{ echo_result.stdout }}"
 
     - name: Run the uptime command
       ansible.builtin.command: uptime
       register: uptime_result
-  
+
     - name: Display the uptime
       ansible.builtin.debug:
         msg: "Uptime: {{ uptime_result.stdout }}"
