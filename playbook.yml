@@ -1,7 +1,7 @@
 ---
 - name: Check server uptime
-  hosts: localhost
-  gather_facts: false
+  hosts: aws
+  become: yes
 
   tasks:
     - name: Checking status
