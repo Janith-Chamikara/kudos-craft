@@ -12,6 +12,14 @@
       ansible.builtin.debug:
         msg: "OUTPUT: {{ echo_result.stdout }}"
 
+    - name: Running whoami
+      ansible.builtin.shell: whoami
+      register: whoami_result
+
+    - name: Display whoami commad result
+      ansible.builtin.debug:
+        msg: "WHOAMI: {{ whoami_result.stdout }}"
+
     - name: Run the uptime command
       ansible.builtin.command: uptime
       register: uptime_result
