@@ -139,9 +139,11 @@ pipeline {
                 echo 'Applying Terraform changes...'
                 sh 'terraform apply -auto-approve'
 
-                def ipAddress = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
-                env.INSTANCE_IP = ipAddress
-                echo "Captured Public IP: ${env.INSTANCE_IP}"
+                script {
+                    def ipAddress = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
+                    env.INSTANCE_IP = ipAddress
+                    echo "Captured Public IP: ${env.INSTANCE_IP}"
+                }
 
                 echo 'Terraform execution complete!'
             }
