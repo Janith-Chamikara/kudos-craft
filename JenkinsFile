@@ -51,6 +51,46 @@ pipeline {
                     }
                 }
 
+
+
+            }
+        }
+
+        stage('Parallel docker builds') {
+            parallel {
+                // --- Job 3: Frontend docker image ---
+                stage('Frontend docker image creation') {
+                    steps {
+                        dir('frontend') {
+                            echo 'Creating frontend docker image...'
+
+                            script {
+                                dockerImage = docker.build("kudos_craft/frontend:${env.BUILD_NUMBER}")
+                            }
+                        }
+                    }
+                }
+                
+                // --- Job 4: Backend docker image ---
+                stage('Backend doocker image creation') {
+                    environment {
+                        DATABASE_URL = 'file:./dev.db'
+                        NODE_ENV = 'development'
+                    }
+
+                    steps {
+                        dir('backend') {
+                            echo 'Creating backend docker image...'
+
+                            script {
+                                dockerImage = docker.build("kudos_craft/backend:${env.BUILD_NUMBER}")
+                            }
+                        }
+                    }
+                }
+
+                
+
             }
         }
     }
