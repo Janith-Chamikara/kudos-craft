@@ -9,124 +9,124 @@ pipeline {
             }
         }
 
-        // stage('Parallel Builds') {
-        //     parallel {
-        //         // --- Job 1: Frontend ---
-        //         stage('Frontend Build') {
-        //             steps {
-        //                 dir('frontend') {
-        //                     echo 'Installing frontend dependencies...'
-        //                     sh 'npm install --legacy-peer-deps --timeout=600000 --fetch-timeout=600000'
+        stage('Parallel Builds') {
+            parallel {
+                // --- Job 1: Frontend ---
+                stage('Frontend Build') {
+                    steps {
+                        dir('frontend') {
+                            echo 'Installing frontend dependencies...'
+                            sh 'npm install --legacy-peer-deps --timeout=600000 --fetch-timeout=600000'
                             
-        //                     echo 'Building frontend...'
-        //                     sh 'npm run build'
-        //                 }
-        //             }
-        //         }
+                            echo 'Building frontend...'
+                            sh 'npm run build'
+                        }
+                    }
+                }
                 
-        //         // --- Job 2: Backend ---
-        //         stage('Backend Build') {
-        //             environment {
-        //                 DATABASE_URL = 'file:./dev.db'
-        //                 NODE_ENV = 'development'
-        //             }
+                // --- Job 2: Backend ---
+                stage('Backend Build') {
+                    environment {
+                        DATABASE_URL = 'file:./dev.db'
+                        NODE_ENV = 'development'
+                    }
 
-        //             steps {
-        //                 dir('backend') {
-        //                     echo 'Installing backend dependencies'
-        //                     sh 'npm install --network-timeout=1000000'
+                    steps {
+                        dir('backend') {
+                            echo 'Installing backend dependencies'
+                            sh 'npm install --network-timeout=1000000'
 
-        //                     echo 'Running Prisma migrations'
-        //                     sh 'npx prisma migrate deploy'
+                            echo 'Running Prisma migrations'
+                            sh 'npx prisma migrate deploy'
 
-        //                     echo 'Generate prisam client'
-        //                     sh 'npx prisma generate'
+                            echo 'Generate prisam client'
+                            sh 'npx prisma generate'
 
-        //                     echo 'Seed the database'
-        //                     sh 'npm run seed'
+                            echo 'Seed the database'
+                            sh 'npm run seed'
                             
-        //                     echo 'Building backend...'
-        //                     sh 'npm run build'
-        //                 }
-        //             }
-        //         }
+                            echo 'Building backend...'
+                            sh 'npm run build'
+                        }
+                    }
+                }
 
 
 
-        //     }
-        // }
+            }
+        }
 
-        // stage('Parallel docker builds') {
+        stage('Parallel docker builds') {
 
-        //     environment {
-        //         BACKEND_IMAGE = "janithdev/kudos-craft-backend"
-        //         FRONTEND_IMAGE = "janithdev/kudos-craft-frontend"
-        //     }
+            environment {
+                BACKEND_IMAGE = "janithdev/kudos-craft-backend"
+                FRONTEND_IMAGE = "janithdev/kudos-craft-frontend"
+            }
 
-        //     parallel {
-        //         // --- Job 3: Frontend docker image ---
-        //         stage('Frontend docker image creation') {
-        //             steps {
-        //                 dir('frontend') {
-        //                     echo 'Creating frontend docker image...'
+            parallel {
+                // --- Job 3: Frontend docker image ---
+                stage('Frontend docker image creation') {
+                    steps {
+                        dir('frontend') {
+                            echo 'Creating frontend docker image...'
 
-        //                     script {
-        //                         frontendDockerImage = docker.build("${FRONTEND_IMAGE}:${env.BUILD_NUMBER}")
-        //                     }
-        //                 }
-        //             }
-        //         }
+                            script {
+                                frontendDockerImage = docker.build("${FRONTEND_IMAGE}:${env.BUILD_NUMBER}")
+                            }
+                        }
+                    }
+                }
                 
-        //         // --- Job 4: Backend docker image ---
-        //         stage('Backend doocker image creation') {
-        //             environment {
-        //                 DATABASE_URL = 'file:./dev.db'
-        //                 NODE_ENV = 'development'
-        //             }
+                // --- Job 4: Backend docker image ---
+                stage('Backend doocker image creation') {
+                    environment {
+                        DATABASE_URL = 'file:./dev.db'
+                        NODE_ENV = 'development'
+                    }
 
-        //             steps {
-        //                 dir('backend') {
-        //                     echo 'Creating backend docker image...'
+                    steps {
+                        dir('backend') {
+                            echo 'Creating backend docker image...'
 
-        //                     script {
-        //                         backendDockerImage = docker.build("${BACKEND_IMAGE}:${env.BUILD_NUMBER}")
-        //                     }
-        //                 }
-        //             }
-        //         }
+                            script {
+                                backendDockerImage = docker.build("${BACKEND_IMAGE}:${env.BUILD_NUMBER}")
+                            }
+                        }
+                    }
+                }
 
                 
 
-        //     }
-        // }
+            }
+        }
 
-        // stage('Pushing frontend and backend docker images to docker hub....') {
-        //     parallel {
-        //         // --- Job 3: Pushing Frontend docker image ---
-        //         stage('Pushing frontend docker image') {
-        //             steps {
-        //                 echo 'Pushing frontend docker image...'
+        stage('Pushing frontend and backend docker images to docker hub....') {
+            parallel {
+                // --- Job 3: Pushing Frontend docker image ---
+                stage('Pushing frontend docker image') {
+                    steps {
+                        echo 'Pushing frontend docker image...'
 
-        //                 script {
-        //                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') 
-        //                     { frontendDockerImage.push() }
-        //                 }
-        //             }
-        //         }
+                        script {
+                            docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') 
+                            { frontendDockerImage.push() }
+                        }
+                    }
+                }
                 
-        //         // --- Job 4: Pushing Backend docker image ---
-        //         stage('Pushing backend docker image') {
-        //             steps {
-        //                 echo 'Pushing backend docker image...'
+                // --- Job 4: Pushing Backend docker image ---
+                stage('Pushing backend docker image') {
+                    steps {
+                        echo 'Pushing backend docker image...'
                         
-        //                 script {
-        //                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') 
-        //                     { backendDockerImage.push() }
-        //                 }     
-        //             }  
-        //         }
-        //     }
-        // }
+                        script {
+                            docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') 
+                            { backendDockerImage.push() }
+                        }     
+                    }  
+                }
+            }
+        }
 
         stage('Creating AWS infrastructure...') {
             steps {
@@ -139,38 +139,7 @@ pipeline {
                 echo 'Applying Terraform changes...'
                 sh 'terraform apply -auto-approve'
 
-                script {
-                    def ipAddress = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
-                    env.INSTANCE_IP = ipAddress
-                    echo "Captured Public IP: ${env.INSTANCE_IP}"
-                }
-
                 echo 'Terraform execution complete!'
-            }
-        }
-
-        stage('Prepare Ansible Inventory') {
-            steps {
-                writeFile(
-                    file: 'inventory.ini',
-                    text: """
-                    [webservers]
-                    ${env.INSTANCE_IP}
-
-                    [webservers:vars]
-                    ansible_user=ec2-user
-                    ansible_ssh_private_key_file=private_key.pem
-                    """
-                )
-
-                withCredentials([sshUserPrivateKey(
-                        credentialsId: 'SSH_Key_AWS', 
-                        keyFileVariable: 'SSH_KEY_FILE_PATH'
-                    )]) {
-                    
-                    sh 'cp ${SSH_KEY_FILE_PATH} private_key.pem'
-                    sh 'chmod 400 private_key.pem'
-                }
             }
         }
 
