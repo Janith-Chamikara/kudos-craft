@@ -1,13 +1,12 @@
 provider "aws" {
   region = "us-east-1"   
 }
-//trigger test
 
-resource "aws_instance" "example" {
-  ami           = "ami-0157af9aea2eef346"  
+resource "aws_instance" "vm_janith" {
+  ami           = "ami-07fb0a5bf9ae299a4"  
   instance_type = "t3.micro"                
 
   tags = {
-    Name = "Test-Janith-5203"
+    Name = "Janith-chamikara"
   }
 }
