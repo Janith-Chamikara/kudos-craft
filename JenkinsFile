@@ -57,6 +57,12 @@ pipeline {
         }
 
         stage('Parallel docker builds') {
+
+            environment {
+                BACKEND_IMAGE = "janithdev/kudos-craft-backend"
+                FRONTEND_IMAGE = "janithdev/kudos-craft-frontend"
+            }
+
             parallel {
                 // --- Job 3: Frontend docker image ---
                 stage('Frontend docker image creation') {
@@ -65,7 +71,7 @@ pipeline {
                             echo 'Creating frontend docker image...'
 
                             script {
-                                frontendDockerImage = docker.build("kudos_craft/frontend:${env.BUILD_NUMBER}")
+                                frontendDockerImage = docker.build("${FRONTEND_IMAGE}:${env.BUILD_NUMBER}")
                             }
                         }
                     }
@@ -83,7 +89,7 @@ pipeline {
                             echo 'Creating backend docker image...'
 
                             script {
-                                backendDockerImage = docker.build("kudos_craft/backend:${env.BUILD_NUMBER}")
+                                backendDockerImage = docker.build("${BACKEND_IMAGE}:${env.BUILD_NUMBER}")
                             }
                         }
                     }
