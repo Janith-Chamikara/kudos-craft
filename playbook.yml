@@ -4,13 +4,13 @@
   gather_facts: false
 
   tasks:
-   - name: Echo Devops
-     ansible.builtin.shell: echo "Devops session Nov 7"
+   - name: Checking status
+     ansible.builtin.shell: echo "Ansible playbook is running..."
      register: echo_result
 
    - name: Display the echo text
      ansible.builtin.debug:
-     msg: "Uptime: {{ echo_result.stdout }}"
+     msg: "OUTPUT: {{ echo_result.stdout }}"
 
   
   tasks:
