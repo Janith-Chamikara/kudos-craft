@@ -4,15 +4,13 @@ pipeline {
     environment {
         BACKEND_IMAGE = "janithdev/kudos-craft-backend"
         FRONTEND_IMAGE = "janithdev/kudos-craft-frontend"
-        TF_VAR_ssh_key_path = "~/.ssh/id_rsa.pub"
+        TF_VAR_ssh_pub_key = credentials('prod-ssh-pub-key')       
+        TF_VAR_do_token = credentials('digitalocean-access-token')
     }
 
     stages {
         stage('Checkout') {
-            steps {
-                echo 'Getting code...'
-                checkout scm
-            }
+            steps { checkout scm }
         }
 
         stage('Build & Push Docker Images') {
@@ -21,27 +19,18 @@ pipeline {
                     steps {
                         dir('frontend') {
                             script {
-                                // Build
                                 def customImage = docker.build("${FRONTEND_IMAGE}:${env.BUILD_NUMBER}")
-                                
-                                // Push (Combine build & push to keep context simple)
-                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                                    customImage.push()
-                                }
+                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') { customImage.push() }
                             }
                         }
                     }
                 }
-                
                 stage('Backend Image') {
                     steps {
                         dir('backend') {
                             script {
                                 def customImage = docker.build("${BACKEND_IMAGE}:${env.BUILD_NUMBER}")
-                                
-                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                                    customImage.push()
-                                }
+                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') { customImage.push() }
                             }
                         }
                     }
@@ -49,20 +38,7 @@ pipeline {
             }
         }
 
-        stage('Find Keys') {
-            steps {
-                // List the contents of the .ssh folder to see the real path
-                sh 'ls -la ~/.ssh'
-                
-                // Print the full path to the home directory
-                sh 'echo $HOME'
-            }
-        }
-
         stage('Provision Infrastructure (Terraform)') {
-            environment {
-                TF_VAR_do_token = credentials('digitalocean-access-token')
-            }
             steps {
                 script {
                     echo 'Initializing Terraform...'
@@ -73,8 +49,8 @@ pipeline {
 
                     def serverIp = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
                     echo "Deploying to server at: ${serverIp}"
-                    
-                    def inventoryContent = "[webserver]\n${serverIp} ansible_user=root ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+
+                    def inventoryContent = "[webserver]\n${serverIp} ansible_user=root ansible_ssh_private_key_file=temp-key.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
                     writeFile file: 'inventory.ini', text: inventoryContent
                 }
             }
@@ -83,20 +59,35 @@ pipeline {
         stage('Deploy Configuration (Ansible)') {
             steps {
                 script {
-                    sh "cat inventory.ini"
+                    withCredentials([
+                        file(credentialsId: 'prod-ssh-key', variable: 'SSH_KEY_FILE'),
+                        usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')
+                    ]) {
+                        echo 'Setting up secure key...'
+                        
+                        // Copy the injected secret file to the workspace as "temp-key.pem"
+                        sh 'cp $SSH_KEY_FILE temp-key.pem'
+                        
+                        // CRITICAL: Secure the permissions
+                        sh 'chmod 600 temp-key.pem'
 
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
                         echo 'Executing playbook...'
                         
-                        // Pass the BUILD_NUMBER so Ansible knows which tag to pull
-                        sh """
-                        ansible-playbook playbook.yml \
-                        -i inventory.ini \
-                        -u root \
-                        -e "build_number=${env.BUILD_NUMBER}" \
-                        -e "docker_password=${DOCKER_PASS}" \
-                        -e "docker_user=${DOCKER_USER}"
-                        """
+                        // Run Ansible (It reads inventory.ini -> finds temp-key.pem -> connects)
+                        try {
+                            sh """
+                            ansible-playbook playbook.yml \
+                            -i inventory.ini \
+                            -u root \
+                            -e "build_number=${env.BUILD_NUMBER}" \
+                            -e "docker_password=${DOCKER_PASS}" \
+                            -e "docker_user=${DOCKER_USER}"
+                            """
+                        } finally {
+                            // --- CHANGE 6: Cleanup (Security Best Practice) ---
+                            // Always delete the key, even if the deployment fails
+                            sh 'rm -f temp-key.pem'
+                        }
                     }
                 }
             }
