@@ -31,7 +31,7 @@ resource "digitalocean_droplet" "web" {
   name     = "kudos-craft-server"
   region   = "nyc1"
   size     = "s-1vcpu-2gb"
-  ssh_keys = [digitalocean_ssh_key.ci_key.id]
+  ssh_keys = [digitalocean_ssh_key.ci_key.fingerprint]
 }
 
 output "droplet_ip" {
