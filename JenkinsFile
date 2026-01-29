@@ -62,34 +62,34 @@ pipeline {
         stage('Deploy Configuration (Ansible)') {
             steps {
                 script {
+                    // 1. Fetch BOTH the Private Key File and the Docker Credentials
                     withCredentials([
                         file(credentialsId: 'prod-ssh-key', variable: 'SSH_KEY_FILE'),
                         usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')
                     ]) {
-                        echo 'Setting up secure key...'
                         
-                        // Copy the injected secret file to the workspace as "temp-key.pem"
-                        sh 'cp $SSH_KEY_FILE temp-key.pem'
+                        echo "Using key file: ${SSH_KEY_FILE}"
                         
-                        // CRITICAL: Secure the permissions
-                        sh 'chmod 600 temp-key.pem'
+                        // 2. Prepare the temporary key with correct permissions
+                        // We copy it to the current workspace so Ansible can reach it easily
+                        sh "cp ${SSH_KEY_FILE} temp-key.pem"
+                        sh "chmod 600 temp-key.pem"
 
-                        echo 'Executing playbook...'
-                        
-                        // Run Ansible (It reads inventory.ini -> finds temp-key.pem -> connects)
                         try {
+                            echo 'Executing playbook...'
+                            // 3. Force Ansible to use 'temp-key.pem'
                             sh """
                             ansible-playbook playbook.yml \
                             -i inventory.ini \
                             -u root \
+                            --private-key=temp-key.pem \
                             -e "build_number=${env.BUILD_NUMBER}" \
                             -e "docker_password=${DOCKER_PASS}" \
                             -e "docker_user=${DOCKER_USER}"
                             """
                         } finally {
-                            // --- CHANGE 6: Cleanup (Security Best Practice) ---
-                            // Always delete the key, even if the deployment fails
-                            sh 'rm -f temp-key.pem'
+                            // Always delete the sensitive key file after the run
+                            sh "rm -f temp-key.pem"
                         }
                     }
                 }
