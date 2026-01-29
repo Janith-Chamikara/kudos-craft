@@ -49,6 +49,16 @@ pipeline {
             }
         }
 
+        stage('Find Keys') {
+            steps {
+                // List the contents of the .ssh folder to see the real path
+                sh 'ls -la ~/.ssh'
+                
+                // Print the full path to the home directory
+                sh 'echo $HOME'
+            }
+        }
+
         stage('Provision Infrastructure (Terraform)') {
             environment {
                 TF_VAR_do_token = credentials('digitalocean-access-token')
