@@ -50,10 +50,13 @@ pipeline {
                     echo "Waiting for Droplet to boot..."
                     sleep 30 
 
-                    def serverIp = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
-                    echo "Deploying to server at: ${serverIp}"
+                    // --- FIX 1: Save IP to 'env.SERVER_IP' (Global) instead of 'def serverIp' (Local) ---
+                    env.SERVER_IP = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
+                    
+                    echo "Deploying to server at: ${env.SERVER_IP}"
 
-                    def inventoryContent = "[webserver]\n${serverIp} ansible_user=root ansible_ssh_private_key_file=temp-key.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+                    // Use env.SERVER_IP here too
+                    def inventoryContent = "[webserver]\n${env.SERVER_IP} ansible_user=root ansible_ssh_private_key_file=temp-key.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
                     writeFile file: 'inventory.ini', text: inventoryContent
                 }
             }
@@ -66,8 +69,8 @@ pipeline {
                         sh "cp ${SSH_KEY_FILE} debug-key.pem && chmod 600 debug-key.pem"
                         
                         echo "Testing raw SSH connection..."
-                        // -v provides 'verbose' output which tells us EXACTLY why the key was rejected
-                        sh "ssh -v -i debug-key.pem -o StrictHostKeyChecking=no root@${serverIp} 'echo SSH_IS_WORKING'"
+                        // --- FIX 2: Use '${env.SERVER_IP}' to access the global variable ---
+                        sh "ssh -v -i debug-key.pem -o StrictHostKeyChecking=no root@${env.SERVER_IP} 'echo SSH_IS_WORKING'"
                     }
                 }
             }
@@ -76,26 +79,23 @@ pipeline {
         stage('Deploy Configuration (Ansible)') {
             steps {
                 script {
-                    // 1. Fetch BOTH the Private Key File and the Docker Credentials
                     withCredentials([
                         file(credentialsId: 'prod-ssh-key', variable: 'SSH_KEY_FILE'),
                         usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')
                     ]) {
                         
                         echo "Using key file: ${SSH_KEY_FILE}"
-                        
-                        // 2. Prepare the temporary key with correct permissions
-                        // We copy it to the current workspace so Ansible can reach it easily
                         sh "cp ${SSH_KEY_FILE} temp-key.pem"
                         sh "chmod 600 temp-key.pem"
 
                         try {
                             echo 'Executing playbook...'
-                            // 3. Force Ansible to use 'temp-key.pem'
+                            // --- FIX 3: Changed '-u ubuntu' to '-u root' ---
+                            // DigitalOcean droplets default to 'root'. Using 'ubuntu' will cause Permission Denied.
                             sh '''
                                 ansible-playbook playbook.yml \
                                 -i inventory.ini \
-                                -u ubuntu \
+                                -u root \
                                 --private-key=temp-key.pem \
                                 --ssh-common-args="-o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
                                 -e "build_number=${BUILD_NUMBER}" \
@@ -103,7 +103,6 @@ pipeline {
                                 -e "docker_user=${DOCKER_USER}"
                                 '''
                         } finally {
-                            // Always delete the sensitive key file after the run
                             sh "rm -f temp-key.pem"
                         }
                     }
