@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        BACKEND_IMAGE = "janithdev/kudos-craft-backend"
+        FRONTEND_IMAGE = "janithdev/kudos-craft-frontend"
+        TF_VAR_ssh_key_path = "~/.ssh/id_rsa.pub"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -9,147 +15,82 @@ pipeline {
             }
         }
 
-        stage('Parallel Builds') {
+        stage('Build & Push Docker Images') {
             parallel {
-                // --- Job 1: Frontend ---
-                stage('Frontend Build') {
+                stage('Frontend Image') {
                     steps {
                         dir('frontend') {
-                            echo 'Installing frontend dependencies...'
-                            sh 'npm install --legacy-peer-deps --timeout=600000 --fetch-timeout=600000'
-                            
-                            echo 'Building frontend...'
-                            sh 'npm run build'
-                        }
-                    }
-                }
-                
-                // --- Job 2: Backend ---
-                stage('Backend Build') {
-                    environment {
-                        DATABASE_URL = 'file:./dev.db'
-                        NODE_ENV = 'development'
-                    }
-
-                    steps {
-                        dir('backend') {
-                            echo 'Installing backend dependencies'
-                            sh 'npm install --network-timeout=1000000'
-
-                            echo 'Running Prisma migrations'
-                            sh 'npx prisma migrate deploy'
-
-                            echo 'Generate prisam client'
-                            sh 'npx prisma generate'
-
-                            echo 'Seed the database'
-                            sh 'npm run seed'
-                            
-                            echo 'Building backend...'
-                            sh 'npm run build'
-                        }
-                    }
-                }
-
-
-
-            }
-        }
-
-        stage('Parallel docker builds') {
-
-            environment {
-                BACKEND_IMAGE = "janithdev/kudos-craft-backend"
-                FRONTEND_IMAGE = "janithdev/kudos-craft-frontend"
-            }
-
-            parallel {
-                // --- Job 3: Frontend docker image ---
-                stage('Frontend docker image creation') {
-                    steps {
-                        dir('frontend') {
-                            echo 'Creating frontend docker image...'
-
                             script {
-                                frontendDockerImage = docker.build("${FRONTEND_IMAGE}:${env.BUILD_NUMBER}")
+                                // Build
+                                def customImage = docker.build("${FRONTEND_IMAGE}:${env.BUILD_NUMBER}")
+                                
+                                // Push (Combine build & push to keep context simple)
+                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                                    customImage.push()
+                                }
                             }
                         }
                     }
                 }
                 
-                // --- Job 4: Backend docker image ---
-                stage('Backend doocker image creation') {
-                    environment {
-                        DATABASE_URL = 'file:./dev.db'
-                        NODE_ENV = 'development'
-                    }
-
+                stage('Backend Image') {
                     steps {
                         dir('backend') {
-                            echo 'Creating backend docker image...'
-
                             script {
-                                backendDockerImage = docker.build("${BACKEND_IMAGE}:${env.BUILD_NUMBER}")
+                                def customImage = docker.build("${BACKEND_IMAGE}:${env.BUILD_NUMBER}")
+                                
+                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                                    customImage.push()
+                                }
                             }
                         }
                     }
                 }
-
-                
-
             }
         }
 
-        stage('Pushing frontend and backend docker images to docker hub....') {
-            parallel {
-                // --- Job 3: Pushing Frontend docker image ---
-                stage('Pushing frontend docker image') {
-                    steps {
-                        echo 'Pushing frontend docker image...'
+        stage('Provision Infrastructure (Terraform)') {
+            steps {
+                script {
+                    echo 'Initializing Terraform...'
+                    sh 'terraform init'
 
-                        script {
-                            docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') 
-                            { frontendDockerImage.push() }
-                        }
-                    }
+                    echo 'Applying Terraform changes...'
+                    sh 'terraform apply -auto-approve'
+
+                    // 1. Capture the IP address from Terraform output
+                    def serverIp = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
+                    
+                    echo "Deploying to server at: ${serverIp}"
+
+                    // 2. Create the inventory.ini file dynamically
+                    def inventoryContent = "[webserver]\n${serverIp} ansible_user=root ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+                    
+                    writeFile file: 'inventory.ini', text: inventoryContent
                 }
-                
-                // --- Job 4: Pushing Backend docker image ---
-                stage('Pushing backend docker image') {
-                    steps {
-                        echo 'Pushing backend docker image...'
+            }
+        }
+
+        stage('Deploy Configuration (Ansible)') {
+            steps {
+                script {
+                    sh "cat inventory.ini"
+
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                        echo 'Executing playbook...'
                         
-                        script {
-                            docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') 
-                            { backendDockerImage.push() }
-                        }     
-                    }  
+                        // Pass the BUILD_NUMBER so Ansible knows which tag to pull
+                        sh """
+                        ansible-playbook playbook.yml \
+                        -i inventory.ini \
+                        -u root \
+                        -e "build_number=${env.BUILD_NUMBER}" \
+                        -e "docker_password=${DOCKER_PASS}" \
+                        -e "docker_user=${DOCKER_USER}"
+                        """
+                    }
                 }
             }
         }
-
-        stage('Creating AWS infrastructure...') {
-            steps {
-                echo 'Initializing Terraform...'
-                sh 'terraform init'
-
-                echo 'Planning Terraform changes...'
-                sh 'terraform plan'
-
-                echo 'Applying Terraform changes...'
-                sh 'terraform apply -auto-approve'
-
-                echo 'Terraform execution complete!'
-            }
-        }
-
-        stage('Running ansible on control node...') {
-            steps {
-                echo 'Executing playbook'
-                sh 'ansible-playbook playbook.yml -i inventory.ini'
-            }
-        }
-
-
     }
 }

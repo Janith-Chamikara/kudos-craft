@@ -1,28 +1,68 @@
 ---
-- name: Check server uptime
-  hosts: localhost
-
+- name: Deploy NextJS and NestJS App to DigitalOcean
+  hosts: webserver
+  become: yes #(sudo)
+  vars:
+    build_number: "{{ build_number }}"
+    docker_user: "janithdev"
   tasks:
-    - name: Checking status
-      ansible.builtin.shell: echo "Ansible playbook is running..."
-      register: echo_result
+    # 1. SETUP: Install Docker & Dependencies
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
 
-    - name: Display the echo text
-      ansible.builtin.debug:
-        msg: "OUTPUT: {{ echo_result.stdout }}"
+    - name: Install required system packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - git
+        state: present
 
-    - name: Running whoami
-      ansible.builtin.shell: whoami
-      register: whoami_result
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
 
-    - name: Display whoami commad result
-      ansible.builtin.debug:
-        msg: "WHOAMI: {{ whoami_result.stdout }}"
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
 
-    - name: Run the uptime command
-      ansible.builtin.command: uptime
-      register: uptime_result
+    - name: Install Docker Engine
+      apt:
+        name: docker-ce
+        state: present
 
-    - name: Display the uptime
-      ansible.builtin.debug:
-        msg: "Uptime: {{ uptime_result.stdout }}"
+    - name: Install Docker Compose (Standalone Binary)
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        mode: "u+x,g+x"
+
+    # 2. DEPLOYMENT: Copy Configs & Start App
+    - name: Copy docker-compose file to server
+      copy:
+        src: ./docker-compose.yml
+        dest: /root/docker-compose.yml
+        mode: "0644"
+
+    - name: Log into Docker Hub
+      shell: "echo '{{ docker_password }}' | docker login -u '{{ docker_user }}' --password-stdin"
+      no_log: true
+    - name: Pull and Restart Containers
+      shell: |
+        # Export the build number so docker-compose sees it
+        export BUILD_NUMBER={{ build_number }}
+
+        # Pull the exact version we just built in Jenkins
+        docker-compose pull
+
+        # Restart containers (only recreates changed ones)
+        docker-compose up -d --remove-orphans
+      args:
+        chdir: /root
