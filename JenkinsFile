@@ -50,28 +50,12 @@ pipeline {
                     echo "Waiting for Droplet to boot..."
                     sleep 30 
 
-                    // --- FIX 1: Save IP to 'env.SERVER_IP' (Global) instead of 'def serverIp' (Local) ---
                     env.SERVER_IP = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
                     
                     echo "Deploying to server at: ${env.SERVER_IP}"
 
-                    // Use env.SERVER_IP here too
                     def inventoryContent = "[webserver]\n${env.SERVER_IP} ansible_user=root ansible_ssh_private_key_file=temp-key.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
                     writeFile file: 'inventory.ini', text: inventoryContent
-                }
-            }
-        }
-
-        stage('Debug SSH Connection') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'prod-ssh-key', variable: 'SSH_KEY_FILE')]) {
-                        sh "cp ${SSH_KEY_FILE} debug-key.pem && chmod 600 debug-key.pem"
-                        
-                        echo "Testing raw SSH connection..."
-                        // --- FIX 2: Use '${env.SERVER_IP}' to access the global variable ---
-                        sh "ssh -v -i debug-key.pem -o StrictHostKeyChecking=no root@${env.SERVER_IP} 'echo SSH_IS_WORKING'"
-                    }
                 }
             }
         }
@@ -90,8 +74,6 @@ pipeline {
 
                         try {
                             echo 'Executing playbook...'
-                            // --- FIX 3: Changed '-u ubuntu' to '-u root' ---
-                            // DigitalOcean droplets default to 'root'. Using 'ubuntu' will cause Permission Denied.
                             sh '''
                                 ansible-playbook playbook.yml \
                                 -i inventory.ini \

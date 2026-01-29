@@ -47,8 +47,8 @@
     # 2. DEPLOYMENT: Copy Configs & Start App
     - name: Copy docker-compose file to server
       copy:
-        src: ./docker-compose.yml
-        dest: /root/docker-compose.yml
+        src: ./docker-compose.prod.yml
+        dest: /root/docker-compose.prod.yml
         mode: "0644"
 
     - name: Log into Docker Hub
