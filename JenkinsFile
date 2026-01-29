@@ -78,15 +78,16 @@ pipeline {
                         try {
                             echo 'Executing playbook...'
                             // 3. Force Ansible to use 'temp-key.pem'
-                            sh """
-                            ansible-playbook playbook.yml \
-                            -i inventory.ini \
-                            -u root \
-                            --private-key=temp-key.pem \
-                            -e "build_number=${env.BUILD_NUMBER}" \
-                            -e "docker_password=${DOCKER_PASS}" \
-                            -e "docker_user=${DOCKER_USER}"
-                            """
+                            sh '''
+                                ansible-playbook playbook.yml \
+                                -i inventory.ini \
+                                -u root \
+                                --private-key=temp-key.pem \
+                                --ssh-common-args="-o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
+                                -e "build_number=${BUILD_NUMBER}" \
+                                -e "docker_password=${DOCKER_PASS}" \
+                                -e "docker_user=${DOCKER_USER}"
+                                '''
                         } finally {
                             // Always delete the sensitive key file after the run
                             sh "rm -f temp-key.pem"
