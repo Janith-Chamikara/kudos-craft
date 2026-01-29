@@ -52,21 +52,21 @@ pipeline {
         stage('Provision Infrastructure (Terraform)') {
             steps {
                 script {
-                    echo 'Initializing Terraform...'
-                    sh 'terraform init'
+                    // Fetch the token from Jenkins Credentials
+                    withCredentials([string(credentialsId: 'digitalocean-access-token', variable: 'MY_DO_TOKEN')]) {
+                        
+                        echo 'Initializing Terraform...'
+                        sh 'terraform init'
 
-                    echo 'Applying Terraform changes...'
-                    sh 'terraform apply -auto-approve'
+                        echo 'Applying Terraform changes...'
+                        sh "TF_VAR_do_token=${MY_DO_TOKEN} terraform apply -auto-approve"
 
-                    // 1. Capture the IP address from Terraform output
-                    def serverIp = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
-                    
-                    echo "Deploying to server at: ${serverIp}"
-
-                    // 2. Create the inventory.ini file dynamically
-                    def inventoryContent = "[webserver]\n${serverIp} ansible_user=root ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
-                    
-                    writeFile file: 'inventory.ini', text: inventoryContent
+                        def serverIp = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
+                        echo "Deploying to server at: ${serverIp}"
+                        
+                        def inventoryContent = "[webserver]\n${serverIp} ansible_user=root ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+                        writeFile file: 'inventory.ini', text: inventoryContent
+                    }
                 }
             }
         }
