@@ -47,6 +47,9 @@ pipeline {
                     echo 'Applying Terraform changes...'
                     sh 'terraform apply -auto-approve'
 
+                    echo "Waiting for Droplet to boot..."
+                    sleep 30 
+
                     def serverIp = sh(script: "terraform output -raw droplet_ip", returnStdout: true).trim()
                     echo "Deploying to server at: ${serverIp}"
 
