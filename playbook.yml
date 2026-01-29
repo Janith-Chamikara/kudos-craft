@@ -48,7 +48,7 @@
     - name: Copy docker-compose file to server
       copy:
         src: ./docker-compose.prod.yml
-        dest: /root/docker-compose.prod.yml
+        dest: /root/docker-compose.yml
         mode: "0644"
 
     - name: Log into Docker Hub
