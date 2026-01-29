@@ -59,6 +59,20 @@ pipeline {
             }
         }
 
+        stage('Debug SSH Connection') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'prod-ssh-key', variable: 'SSH_KEY_FILE')]) {
+                        sh "cp ${SSH_KEY_FILE} debug-key.pem && chmod 600 debug-key.pem"
+                        
+                        echo "Testing raw SSH connection..."
+                        // -v provides 'verbose' output which tells us EXACTLY why the key was rejected
+                        sh "ssh -v -i debug-key.pem -o StrictHostKeyChecking=no root@${serverIp} 'echo SSH_IS_WORKING'"
+                    }
+                }
+            }
+        }
+
         stage('Deploy Configuration (Ansible)') {
             steps {
                 script {
