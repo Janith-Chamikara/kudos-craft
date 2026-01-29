@@ -81,7 +81,7 @@ pipeline {
                             sh '''
                                 ansible-playbook playbook.yml \
                                 -i inventory.ini \
-                                -u root \
+                                -u ubuntu \
                                 --private-key=temp-key.pem \
                                 --ssh-common-args="-o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
                                 -e "build_number=${BUILD_NUMBER}" \
