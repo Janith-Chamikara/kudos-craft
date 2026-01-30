@@ -41,6 +41,18 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
       - NODE_ENV=development
+      - JWT_SECRET='janithchamikara'
+      - GEMINI_API_KEY='test'
+      - ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC=300000
+      - REFRESH_TOKEN_VALIDITY_DURATION_IN_SEC=300000
+      - ACCESS_TOKEN_SECRET=janithchamikara
+      - REFRESH_TOKEN_SECRET=janithchamikara
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_SECURE=true
+      - SMTP_USER=kudoscraft.contact@gmail.com
+      - SMTP_PASSWORD=vyml qaux xmzg tskl
+      - SMTP_FROM_EMAIL=kudoscraft.contact@gmail.com
 
   db:
     image: postgres:17.6
