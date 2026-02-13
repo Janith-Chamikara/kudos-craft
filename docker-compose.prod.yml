@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   frontend:
-    image: janithdev/kudos-craft-frontend:87
+    image: janithdev/kudos-craft-frontend:${BUILD_NUMBER}
     container_name: frontend-prod
     ports:
       - "3000:3000"
@@ -23,8 +23,7 @@ services:
       - NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_51QiYlJApCGLhfsDLDtA6RNUJuUY8buS1yDkrzK1qWzVuR95JAloPfxk5XhDXv4vg5cqRfBdcde5wxxOW8lclpcKu00sAk5hebq
 
   backend:
-    # image: janithdev/kudos-craft-backend:87
-    image: kudos-backend:test
+    image: janithdev/kudos-craft-backend:{BUILD_NUMBER}
     container_name: backend-prod
     ports:
       - "3001:3000"
