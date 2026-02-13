@@ -41,10 +41,10 @@ services:
       - ACCESS_TOKEN_SECRET=janithchamikara
       - REFRESH_TOKEN_SECRET=janithchamikara
       - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=465
-      - SMTP_SECURE=true
+      - SMTP_PORT=587
+      - SMTP_SECURE=false
       - SMTP_USER=kudoscraft.contact@gmail.com
-      - SMTP_PASSWORD=vyml qaux xmzg tskl
+      - SMTP_PASSWORD=pzef jrzq hduo qfwr
       - SMTP_FROM_EMAIL=kudoscraft.contact@gmail.com
 
   db:
