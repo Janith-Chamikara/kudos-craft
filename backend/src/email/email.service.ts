@@ -18,6 +18,7 @@ export class EmailService {
   private async initializeTransporter() {
     try {
       this.transporter = nodemailer.createTransport({
+        family: 4,
         host: this.configService.get<string>('SMTP_HOST'),
         port: this.configService.get<number>('SMTP_PORT'),
         secure: this.configService.get<boolean>('SMTP_SECURE', false),
@@ -25,7 +26,7 @@ export class EmailService {
           user: this.configService.get<string>('SMTP_USER'),
           pass: this.configService.get<string>('SMTP_PASSWORD'),
         },
-      });
+      } as any);
 
       await this.transporter.verify();
       this.logger.log('Email service initialized successfully');
