@@ -10,7 +10,13 @@ async function refreshTokenHandler(
   const response = await refreshAccessToken(refreshToken);
   console.log(response);
   if (response?.status === 'success') {
-    return { ...token, ...response.data };
+    return {
+      ...token,
+      tokenInfo: {
+        ...token.tokenInfo,
+        ...response.data,
+      },
+    };
   }
   return token;
 }
@@ -54,7 +60,10 @@ export const authOptions: NextAuthOptions = {
       const currentTime = new Date().getTime();
       console.log(currentTime);
       if (currentTime < expiresIn) return token;
-      return await refreshTokenHandler(token.refreshToken as string, token);
+      return await refreshTokenHandler(
+        token.tokenInfo.refreshToken as string,
+        token,
+      );
     },
 
     async session({ token, session }) {

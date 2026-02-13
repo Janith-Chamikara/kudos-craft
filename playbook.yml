@@ -6,7 +6,6 @@
     build_number: "{{ build_number }}"
     docker_user: "janithdev"
   tasks:
-    # 1. SETUP: Install Docker & Dependencies
     - name: Update apt cache
       apt:
         update_cache: yes

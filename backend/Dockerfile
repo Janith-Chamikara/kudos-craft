@@ -1,41 +1,26 @@
-# Common dependencies stage
-FROM node:20 AS deps
-WORKDIR /app
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+RUN apk add --no-cache bash libc6-compat openssl netcat-openbsd
+
 COPY package*.json ./
+COPY prisma ./prisma
+
 RUN npm install
 
-#Development stage
-FROM node:20 as development
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
+RUN npm install -g @nestjs/cli
 
 COPY . .
 
-RUN npx prisma generate
 
-CMD ["npm", "run", "start:dev"]
+COPY docker-entrypoint.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-#Builder stage
-FROM node:20 as builder
+ENTRYPOINT [ "docker-entrypoint.sh" ]
 
-WORKDIR /app
+EXPOSE 3000
+EXPOSE 5555
 
-COPY package*.json ./
 
-COPY --from=deps /app/node_modules ./node_modules
-
-COPY . .
-
-RUN npx prisma generate
-
-RUN npm run build
-
-# Production stage
-FROM node:20
-
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 4000
-CMD ["node", "dist/main.js"]
+CMD [ "npm", "run", "start:dev" ]

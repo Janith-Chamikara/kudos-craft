@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "email" TEXT NOT NULL,
     "bio" TEXT,
     "firstName" TEXT NOT NULL,
@@ -12,77 +12,72 @@ CREATE TABLE "User" (
     "job" TEXT,
     "subscriptionPlan" TEXT NOT NULL DEFAULT 'free',
     "role" TEXT NOT NULL DEFAULT 'user',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     "password" TEXT NOT NULL,
     "isInitialSetupCompleted" BOOLEAN NOT NULL DEFAULT false,
-    "currentPeriodEnd" TIMESTAMP(3),
+    "currentPeriodEnd" DATETIME,
     "stripeCustomerId" TEXT,
     "subscriptionId" TEXT,
-    "subscriptionStatus" TEXT,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    "subscriptionStatus" TEXT
 );
 
 -- CreateTable
 CREATE TABLE "Subscription" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "stripeSubscriptionId" TEXT NOT NULL,
     "status" TEXT NOT NULL,
     "planId" TEXT NOT NULL,
-    "startDate" TIMESTAMP(3) NOT NULL,
-    "endDate" TIMESTAMP(3),
+    "startDate" DATETIME NOT NULL,
+    "endDate" DATETIME,
     "cancelAtPeriodEnd" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     "userId" TEXT NOT NULL,
-
-    CONSTRAINT "Subscription_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Subscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Invoice" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "stripeInvoiceId" TEXT NOT NULL,
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" REAL NOT NULL,
     "currency" TEXT NOT NULL,
     "status" TEXT NOT NULL,
-    "invoiceDate" TIMESTAMP(3) NOT NULL,
-    "paidAt" TIMESTAMP(3),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "invoiceDate" DATETIME NOT NULL,
+    "paidAt" DATETIME,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     "userId" TEXT NOT NULL,
     "subscriptionId" TEXT,
-
-    CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Invoice_subscriptionId_fkey" FOREIGN KEY ("subscriptionId") REFERENCES "Subscription" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "Invoice_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Workspace" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     "ownerId" TEXT NOT NULL,
-
-    CONSTRAINT "Workspace_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Workspace_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Testimonial" (
-    "id" TEXT NOT NULL,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "ratings" DOUBLE PRECISION NOT NULL,
+    "ratings" REAL NOT NULL,
     "review" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     "isAnalyzed" BOOLEAN NOT NULL DEFAULT false,
     "sentiment" TEXT,
     "workspaceId" TEXT NOT NULL,
-
-    CONSTRAINT "Testimonial_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Testimonial_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -117,18 +112,3 @@ CREATE INDEX "Workspace_id_idx" ON "Workspace"("id");
 
 -- CreateIndex
 CREATE INDEX "Testimonial_id_idx" ON "Testimonial"("id");
-
--- AddForeignKey
-ALTER TABLE "Subscription" ADD CONSTRAINT "Subscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_subscriptionId_fkey" FOREIGN KEY ("subscriptionId") REFERENCES "Subscription"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Workspace" ADD CONSTRAINT "Workspace_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Testimonial" ADD CONSTRAINT "Testimonial_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

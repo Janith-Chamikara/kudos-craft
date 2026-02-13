@@ -14,5 +14,7 @@ echo "Generating Prisma Client"
 # Generate prisma client
 npx prisma generate
 
+npm run seed
+
 # Start the app
 exec "$@"
