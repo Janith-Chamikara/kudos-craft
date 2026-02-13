@@ -23,7 +23,7 @@ services:
       - NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_51QiYlJApCGLhfsDLDtA6RNUJuUY8buS1yDkrzK1qWzVuR95JAloPfxk5XhDXv4vg5cqRfBdcde5wxxOW8lclpcKu00sAk5hebq
 
   backend:
-    image: janithdev/kudos-craft-backend:{BUILD_NUMBER}
+    image: janithdev/kudos-craft-backend:${BUILD_NUMBER}
     container_name: backend-prod
     ports:
       - "3001:3000"
