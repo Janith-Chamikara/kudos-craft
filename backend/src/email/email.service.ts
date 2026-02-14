@@ -12,7 +12,7 @@ export class EmailService {
   private readonly logger = new Logger(EmailService.name);
 
   constructor(private configService: ConfigService) {
-    this.initializeTransporter();
+    // this.initializeTransporter();
   }
 
   private async initializeTransporter() {
