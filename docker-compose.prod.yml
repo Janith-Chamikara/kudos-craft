@@ -44,7 +44,7 @@ services:
       - SMTP_PORT=587
       - SMTP_SECURE=false
       - SMTP_USER=kudoscraft.contact@gmail.com
-      - SMTP_PASSWORD=pzef jrzq hduo qfwr
+      - SMTP_PASSWORD=xrls rdok xvgp drgc
       - SMTP_FROM_EMAIL=kudoscraft.contact@gmail.com
 
   db:

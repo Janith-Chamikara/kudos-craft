@@ -10,10 +10,10 @@ echo "Database started"
 # # Apply db migrations
 # npx prisma migrate deploy
 
-npx prisma db push
+npx prisma migrate reset
 
-echo "Generating Prisma Client"
-# Generate prisma client
+npx prisma migrate dev --name "init"
+
 npx prisma generate
 
 npm run seed
