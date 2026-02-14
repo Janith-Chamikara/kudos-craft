@@ -32,7 +32,7 @@ export default function HeroSection() {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-              Turn Customer Voices into Your{' '}
+              Update Janith Chamikara Turn Customer Voices into Your{' '}
               <span className="text-primary">Strongest Asset</span>
             </h1>
             <p className="text-muted-foreground text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto">
